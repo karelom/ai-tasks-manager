@@ -34,7 +34,7 @@ async function seedTasks() {
     tasks.map(
       (task) => sql`
         INSERT INTO tasks (title, description, status, priority, ai_summary, deleted_at)
-        VALUES (${task.title}, ${task.description}, ${task.status}, ${task.priority}, ${task.ai_summary}, ${task.deleted_at})
+        VALUES (${task.title}, ${task.description}, ${task.status}, ${task.priority}, ${task.aiSummary}, ${task.deletedAt})
         ON CONFLICT (id) DO NOTHING;
       `
     )

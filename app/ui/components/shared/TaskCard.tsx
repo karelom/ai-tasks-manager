@@ -19,9 +19,7 @@ export default function TaskCard({ data }: TaskCardProps) {
           {data.priority}
         </span>
         <h3 className="font-semibold text-slate-800 group-hover:text-blue-600">{data.title}</h3>
-        <p className="text-xs text-slate-400">
-          {new Date(data.created_at).toLocaleString('zh-tw')}
-        </p>
+        <p className="text-xs text-slate-400">{new Date(data.createdAt).toLocaleString('zh-tw')}</p>
       </div>
 
       <span

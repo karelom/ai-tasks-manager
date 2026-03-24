@@ -1,14 +1,19 @@
 export type Task = {
   id: string;
+  projectId: string | null;
+  /** for subtask */
+  parentId: string | null;
   title: string;
   description: string;
   status: TaskStatus;
   priority: TaskPriority;
-  ai_summary: string;
-  due_date: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
+  /** for LLM suggestion */
+  aiSummary: string;
+  dueAt: string;
+  createdAt: string;
+  updatedAt: string;
+  /** soft deletion */
+  deletedAt: string | null;
 };
 
 export enum TaskStatus {
