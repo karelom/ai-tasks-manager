@@ -1,4 +1,6 @@
 import { fetchActiveTask } from '@/lib/data';
+import TaskPriorityLabel from '@/ui/components/shared/TaskPriorityLabel';
+import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -27,13 +29,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
       {/* Right Column: Metadata */}
       <div className="bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
-        <div>
+        <div className="flex flex-col gap-2">
           <label className="text-xs font-bold text-slate-400 uppercase">Status</label>
-          <div className="capitalize font-medium">{task.status}</div>
+          <TaskStatusLabel data={task.status} />
         </div>
-        <div>
+
+        <div className="flex flex-col gap-2">
           <label className="text-xs font-bold text-slate-400 uppercase">Priority</label>
-          <div className="capitalize font-medium">{task.priority}</div>
+          <TaskPriorityLabel data={task.priority} />
         </div>
       </div>
     </div>
