@@ -1,7 +1,17 @@
-import { Task, TaskPriority, TaskStatus } from '@/lib/definitions';
+import { Project, Task, TaskPriority, TaskStatus } from '@/lib/definitions';
 
-const tasks: Omit<Task, 'id' | 'projectId' | 'parentId' | 'dueAt' | 'createdAt' | 'updatedAt'>[] = [
+const projects: Omit<Project, 'createdAt' | 'updatedAt' | 'deletedAt'>[] = [
   {
+    id: '1042cb4b-e391-4966-9baa-562f47f768a2',
+    name: 'AI Task Manager',
+    description: 'Building a Next.js 15 app with Neon and Gemini',
+    colorCode: '#8b5cf6',
+  },
+];
+
+const tasks: Omit<Task, 'id' | 'parentId' | 'dueAt' | 'createdAt' | 'updatedAt'>[] = [
+  {
+    projectId: projects[0].id,
     title: 'Refactor C++ Engine',
     description: 'Optimize the memory allocation for the packet handler.',
     status: TaskStatus.IN_PROGRESS,
@@ -10,6 +20,7 @@ const tasks: Omit<Task, 'id' | 'projectId' | 'parentId' | 'dueAt' | 'createdAt' 
     deletedAt: null,
   },
   {
+    projectId: projects[0].id,
     title: 'Learn Tailwind Grid',
     description: 'Master the responsive grid system for the new layout.',
     status: TaskStatus.COMPLETED,
@@ -18,6 +29,7 @@ const tasks: Omit<Task, 'id' | 'projectId' | 'parentId' | 'dueAt' | 'createdAt' 
     deletedAt: null,
   },
   {
+    projectId: projects[0].id,
     title: 'Old Bug Report',
     description: 'Fix the flickering issue in the sidebar.',
     status: TaskStatus.PENDING,
@@ -26,6 +38,7 @@ const tasks: Omit<Task, 'id' | 'projectId' | 'parentId' | 'dueAt' | 'createdAt' 
     deletedAt: '2026-03-23 10:00:00Z',
   },
   {
+    projectId: projects[0].id,
     title: 'English Interview Prep',
     description: 'Practice STAR method for behavioral questions.',
     status: TaskStatus.BACKLOG,
@@ -35,4 +48,4 @@ const tasks: Omit<Task, 'id' | 'projectId' | 'parentId' | 'dueAt' | 'createdAt' 
   },
 ];
 
-export { tasks };
+export { projects, tasks };

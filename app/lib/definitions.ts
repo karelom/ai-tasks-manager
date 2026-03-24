@@ -1,4 +1,14 @@
-export type Task = {
+export interface Project {
+  id: string;
+  name: string;
+  description: string;
+  colorCode: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+}
+
+export interface Task {
   id: string;
   projectId: string | null;
   /** for subtask */
@@ -12,9 +22,8 @@ export type Task = {
   dueAt: string;
   createdAt: string;
   updatedAt: string;
-  /** soft deletion */
   deletedAt: string | null;
-};
+}
 
 export enum TaskStatus {
   BACKLOG = 'backlog',
