@@ -3,12 +3,21 @@
 import { useRouter } from 'next/navigation';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import CreateTaskForm, { CreateTaskProps } from '@/ui/components/shared/CreateTaskForm';
+import { useEffect } from 'react';
 
 export default function Page({ projectId, parentId }: CreateTaskProps) {
   const router = useRouter();
 
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') router.back();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [router]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       {/* 1. The Backdrop Click Area */}
       <div className="absolute inset-0" onClick={() => router.back()} />
 
