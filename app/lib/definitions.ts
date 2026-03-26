@@ -19,7 +19,7 @@ export interface Task {
   priority: TaskPriority;
   /** for LLM suggestion */
   aiSummary: string;
-  dueAt: string;
+  dueAt: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
