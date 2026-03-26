@@ -11,7 +11,7 @@ export default function TaskCard({ data }: TaskCardProps) {
     <Link
       key={data.id}
       href={`/task/${data.id}`}
-      className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition flex justify-between items-center gap-8"
+      className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition flex justify-between items-center gap-8 group"
     >
       <div>
         <TaskPriorityLabel data={data.priority} />
