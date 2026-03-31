@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 
 export interface CreateTaskProps {
-  projectId?: string;
-  parentId?: string;
+  projectId?: string | null;
+  parentId?: string | null;
 }
 
 export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps) {

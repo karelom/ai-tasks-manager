@@ -1,6 +1,6 @@
-import { CreateTaskProps } from '@/(main)/task/new/page';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { CreateTaskProps } from '@/ui/components/shared/CreateTaskForm';
 
 export default function CreateTaskButton({ projectId, parentId }: CreateTaskProps) {
   return (
