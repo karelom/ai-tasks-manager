@@ -6,6 +6,14 @@ import CreateTaskForm from '@/ui/components/shared/CreateTaskForm';
 import { Suspense, useEffect } from 'react';
 
 export default function Page() {
+  return (
+    <Suspense fallback={<div>loading form ...</div>}>
+      <ModalContent />
+    </Suspense>
+  );
+}
+
+function ModalContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get('projectId');
@@ -39,9 +47,7 @@ export default function Page() {
 
         {/* The Form (Reused from your full-page route) */}
         <div className="p-6">
-          <Suspense fallback={<div>loading form ...</div>}>
-            <CreateTaskForm projectId={projectId} parentId={parentId} />
-          </Suspense>
+          <CreateTaskForm projectId={projectId} parentId={parentId} />
         </div>
       </div>
     </div>
