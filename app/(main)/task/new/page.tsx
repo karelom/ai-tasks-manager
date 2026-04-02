@@ -17,5 +17,10 @@ function MainContent() {
   const projectId = searchParams.get('projectId');
   const parentId = searchParams.get('parentId');
 
-  return <CreateTaskForm projectId={projectId} parentId={parentId} />;
+  return (
+    <>
+      <h2 className="text-xl font-semibold text-slate-800 mb-8">Create New Task</h2>
+      <CreateTaskForm projectId={projectId} parentId={parentId} />
+    </>
+  );
 }
