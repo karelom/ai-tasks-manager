@@ -184,7 +184,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
       <button
         type="submit"
         disabled={isSubmitting}
-        className="flex justify-self-end px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 hover:cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+        className="w-full sm:w-auto sm:flex sm:justify-self-end px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 hover:cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
       >
         {isSubmitting ? 'Adding...' : 'Add Task'}
       </button>
