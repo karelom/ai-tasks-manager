@@ -172,7 +172,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
               />
               {isInvalidDate(dueDateValue) && (
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 bg-white pointer-events-none">
-                  Select due date...
+                  Select a date.
                 </span>
               )}
             </div>

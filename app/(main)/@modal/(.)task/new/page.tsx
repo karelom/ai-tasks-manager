@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import CreateTaskForm from '@/ui/components/shared/CreateTaskForm';
 import { Suspense, useEffect } from 'react';
+import clsx from 'clsx';
 
 export default function Page() {
   return (
@@ -33,7 +34,12 @@ function ModalContent() {
       <div className="absolute inset-0" onClick={() => router.back()} />
 
       {/* 2. The Modal Content */}
-      <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div
+        className={clsx(
+          'relative  bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in zoom-in duration-200',
+          'w-9/10 max-w-3xl'
+        )}
+      >
         {/* Header with Close Button */}
         <div className="flex items-center justify-between p-4 border-b border-slate-100">
           <h2 className="text-xl font-semibold text-slate-800">Create New Task</h2>
