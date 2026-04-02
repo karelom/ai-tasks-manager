@@ -6,8 +6,7 @@ import { AddTaskSchema, AddTaskType, defaultAddTask, isInvalidDate } from '@/lib
 import { zodResolver } from '@hookform/resolvers/zod';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export interface CreateTaskProps {
@@ -23,7 +22,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    watch,
+    control,
   } = useForm({
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
@@ -33,7 +32,10 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
     },
   });
 
-  const dueDateValue = watch('dueAt');
+  const dueDateValue = useWatch({
+    control,
+    name: 'dueAt',
+  });
 
   const onSubmit = async (data: AddTaskType) => {
     const result = await createTask(data);
