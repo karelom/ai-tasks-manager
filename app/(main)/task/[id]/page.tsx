@@ -4,6 +4,7 @@ import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
+import { InlineTitle } from '@/ui/components/shared/InlineTitle';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +30,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Content */}
         <div className="md:col-span-2 space-y-6">
-          <h1 className="text-3xl font-bold text-slate-900">{task.title}</h1>
+          <InlineTitle taskId={task.id} data={task.title} />
+
           <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl">
             <h3 className="text-sm font-bold text-blue-700 uppercase mb-2">AI Insights</h3>
             <p className="text-slate-700">{task.aiSummary || 'AI is analyzing this task...'}</p>

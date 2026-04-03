@@ -21,10 +21,29 @@ export async function createTask(payload: AddTaskType) {
       VALUES (${projectId}, ${parentId}, ${title}, ${description}, ${status}, ${priority}, ${dueAt})
     `;
   } catch (err) {
-    console.error(err);
+    console.error('Failed to create task:', err);
     return { ok: false, message: 'Database Error: Failed to Create Task.' };
   }
 
   revalidatePath('/all-task');
   return { ok: true };
+}
+
+export async function updateTask(id: string, updates: Partial<AddTaskType>) {
+  const keys = Object.keys(updates) as (keyof AddTaskType)[];
+  if (!keys.length) return { ok: true };
+
+  try {
+    await sql`
+      UPDATE tasks 
+      SET ${sql(updates, ...keys)} 
+      WHERE id = ${id}
+    `;
+
+    revalidatePath(`/task/${id}`);
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to update task:', err);
+    return { ok: false, error: 'Database Error: Failed to Update Task.' };
+  }
 }
