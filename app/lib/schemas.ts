@@ -4,7 +4,7 @@ import { TaskPriority, TaskStatus } from './definitions';
 export const AddTaskSchema = z.object({
   projectId: z.string().nullable(),
   parentId: z.string().nullable(),
-  title: z.string().min(3, 'Title is required.').max(255),
+  title: z.string().min(1, 'Title is required.').max(255),
   description: z.string(),
   status: z.enum(TaskStatus),
   priority: z.enum(TaskPriority),
