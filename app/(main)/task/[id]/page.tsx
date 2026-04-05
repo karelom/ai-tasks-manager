@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { InlineTitle } from '@/ui/components/shared/InlineTitle';
+import { InlineDescription } from '@/ui/components/shared/InlineDescription';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -38,7 +39,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
           <div className="prose max-w-none">
             <h4 className="text-lg font-semibold">Description</h4>
-            <p className="text-slate-600">{task.description || 'No description provided.'}</p>
+            <InlineDescription taskId={task.id} data={task.description} />
           </div>
         </div>
 
