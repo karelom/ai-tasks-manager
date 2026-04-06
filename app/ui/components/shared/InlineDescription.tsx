@@ -6,6 +6,13 @@ import { useState, useEffect } from 'react';
 import { updateTask } from '@/lib/actions';
 import clsx from 'clsx';
 import { BubbleMenu } from '@tiptap/react/menus';
+import {
+  BoldIcon,
+  ItalicIcon,
+  CodeBracketIcon,
+  ListBulletIcon,
+  NumberedListIcon,
+} from '@heroicons/react/24/outline';
 
 export function InlineDescription({ taskId, data }: { taskId: string; data: string }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -20,7 +27,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'prose prose-pink focus:outline-none max-w-none min-h-[100px]',
+        class: 'prose prose-sm prose-slate focus:outline-none max-w-none min-h-[100px]',
       },
       handleKeyDown: (view, e) => {
         switch (e.key) {
@@ -70,7 +77,9 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       return {
         isBold: editor.isActive('bold'),
         isItalic: editor.isActive('italic'),
+        isCode: editor.isActive('code'),
         isBulletList: editor.isActive('bulletList'),
+        isOrderedList: editor.isActive('orderedList'),
       };
     },
   });
@@ -91,7 +100,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
   return (
     <div
       className={clsx(
-        'relative w-full p-2 rounded-lg transition-all border',
+        'relative w-full p-2 rounded-lg transition-all duration-200 border',
         isEditing
           ? 'bg-white border-blue-100 shadow-sm ring-2 ring-blue-100'
           : 'bg-transparent border-transparent hover:bg-slate-100 cursor-text',
@@ -104,32 +113,35 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
     >
       {editor && (
         <BubbleMenu editor={editor} options={{ placement: 'top', offset: 8, flip: true }}>
-          <div className="flex items-center gap-1 bg-white border border-slate-200 shadow-xl rounded-lg p-1.5 animate-in fade-in zoom-in-95 duration-200">
-            <button
-              onMouseDown={(e) => e.preventDefault()}
+          <div className="flex items-center gap-0.5 bg-white border border-slate-200 shadow-2xl rounded-lg p-1 animate-in fade-in zoom-in-95 duration-200">
+            <ToolbarButton
+              active={editorState?.isBold}
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className={clsx(
-                'p-1.5 rounded transition-colors text-xs font-bold',
-                editorState?.isBold
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'hover:bg-slate-100 text-slate-600'
-              )}
-            >
-              B
-            </button>
-            <div className="w-px h-4 bg-slate-200 mx-1" /> {/* Divider */}
-            <button
-              onMouseDown={(e) => e.preventDefault()}
+              icon={BoldIcon}
+            />
+            <ToolbarButton
+              active={editorState?.isItalic}
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              icon={ItalicIcon}
+            />
+            <ToolbarButton
+              active={editorState?.isCode}
+              onClick={() => editor.chain().focus().toggleCode().run()}
+              icon={CodeBracketIcon}
+            />
+
+            <div className="w-px h-3 bg-slate-700 mx-1" />
+
+            <ToolbarButton
+              active={editorState?.isBulletList}
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={clsx(
-                'p-1.5 rounded transition-colors text-xs',
-                editorState?.isBulletList
-                  ? 'bg-blue-100 text-blue-600'
-                  : 'hover:bg-slate-100 text-slate-600'
-              )}
-            >
-              List
-            </button>
+              icon={ListBulletIcon}
+            />
+            <ToolbarButton
+              active={editorState?.isOrderedList}
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              icon={NumberedListIcon}
+            />
           </div>
         </BubbleMenu>
       )}
@@ -149,10 +161,36 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       )}
 
       {isSaving && (
-        <div className="absolute bottom-2 right-2 text-xs text-slate-400 animate-pulse">
+        <div className="absolute bottom-2 right-2 text-xs text-slate-400 animate-pulse uppercase tracking-wider">
           Saving...
         </div>
       )}
     </div>
+  );
+}
+
+function ToolbarButton({
+  active,
+  onClick,
+  icon,
+}: {
+  active?: boolean;
+  onClick: () => void;
+  icon: React.ForwardRefExoticComponent<React.PropsWithoutRef<React.SVGProps<SVGSVGElement>>>;
+}) {
+  const ButtonIcon = icon;
+  return (
+    <button
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className={clsx(
+        'p-1.5 rounded-md transition-all flex items-center justify-center cursor-pointer',
+        active
+          ? 'bg-slate-700 text-white shadow-inner'
+          : 'text-slate-700 hover:text-slate-100 hover:bg-slate-800'
+      )}
+    >
+      <ButtonIcon className="w-5" />
+    </button>
   );
 }
