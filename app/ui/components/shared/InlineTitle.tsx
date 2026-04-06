@@ -121,7 +121,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
         )}
 
         {isSaving && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse">
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse uppercase tracking-wider">
             Saving...
           </span>
         )}
