@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/command';
 import { ResponseState } from '@/lib/actions';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
+import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 
 export interface InlineSelectOption<T> {
   value: T;
@@ -105,7 +106,11 @@ export function InlineSelect<T extends string | number>({
     <div className={cn('flex flex-col gap-2', { 'opacity-50 pointer-events-none': isUpdating })}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="cursor-pointer">{renderTrigger(currentValue)}</div>
+          <div className="cursor-pointer relative">
+            {renderTrigger(currentValue)}
+
+            <HintSavingLabel enable={isUpdating} />
+          </div>
         </PopoverTrigger>
 
         <PopoverContent className="w-50 p-0 shadow-xl border-slate-200" align="start">

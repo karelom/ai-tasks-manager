@@ -13,6 +13,7 @@ import {
   ListBulletIcon,
   NumberedListIcon,
 } from '@heroicons/react/24/outline';
+import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 
 export function InlineDescription({ taskId, data }: { taskId: string; data: string }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -160,11 +161,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
         </div>
       )}
 
-      {isSaving && (
-        <div className="absolute bottom-2 right-2 text-xs text-slate-400 animate-pulse uppercase tracking-wider">
-          Saving...
-        </div>
-      )}
+      <HintSavingLabel enable={isSaving} />
     </div>
   );
 }

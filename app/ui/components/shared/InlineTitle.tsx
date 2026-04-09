@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { updateTask } from '@/lib/actions'; // You'll need this server action
+import { updateTask } from '@/lib/actions';
 import clsx from 'clsx';
 import { AddTaskSchema } from '@/lib/schemas';
+import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 
 export function InlineTitle({ taskId, data }: { taskId: string; data: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -120,11 +121,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
           </div>
         )}
 
-        {isSaving && (
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse uppercase tracking-wider">
-            Saving...
-          </span>
-        )}
+        <HintSavingLabel enable={isSaving} />
       </div>
     );
   }
