@@ -1,17 +1,46 @@
+'use client';
+
 import { TaskStatus } from '@/lib/definitions';
-import clsx from 'clsx';
+import { InlineSelect, InlineSelectOption } from './InlineSelect';
+import { updateTask } from '@/lib/actions';
+import { cn } from '@/lib/utils';
 
 interface TaskStatusLabelProps {
   data: TaskStatus;
+  taskId?: string;
 }
 
-export default function TaskStatusLabel({ data }: TaskStatusLabelProps) {
+const STATUS_OPTIONS: InlineSelectOption<TaskStatus>[] = [
+  { value: TaskStatus.BACKLOG, label: 'Backlog', shortcut: '⌘B' },
+  { value: TaskStatus.PENDING, label: 'Pending', shortcut: '⌘P' },
+  { value: TaskStatus.IN_PROGRESS, label: 'In Progress', shortcut: '⌘I' },
+  { value: TaskStatus.COMPLETED, label: 'Completed', shortcut: '⌘C' },
+];
+
+export default function TaskStatusLabel({ data, taskId }: TaskStatusLabelProps) {
+  const handleStatusChange = async (status: TaskStatus) => {
+    if (!taskId) return { ok: true };
+    return await updateTask(taskId, { status });
+  };
+
+  if (taskId) {
+    return (
+      <InlineSelect<TaskStatus>
+        data={data}
+        options={STATUS_OPTIONS}
+        renderTrigger={(selected) => <DisplayLabel data={selected} />}
+        onSave={handleStatusChange}
+      />
+    );
+  } else {
+    return <DisplayLabel data={data} />;
+  }
+}
+
+function DisplayLabel({ data }: { data: TaskStatus }) {
   return (
     <div
-      className={clsx(
-        'px-3 py-1 rounded-full text-xs font-medium max-w-max',
-        taskStatusClass(data)
-      )}
+      className={cn('px-3 py-1 rounded-full text-xs font-medium max-w-max', taskStatusClass(data))}
     >
       {data}
     </div>

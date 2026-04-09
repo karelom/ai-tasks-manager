@@ -29,7 +29,15 @@ export async function createTask(payload: AddTaskType) {
   return { ok: true };
 }
 
-export async function updateTask(id: string, updates: Partial<AddTaskType>) {
+export interface ResponseState {
+  ok: boolean;
+  error?: string;
+}
+
+export async function updateTask(
+  id: string,
+  updates: Partial<AddTaskType>
+): Promise<ResponseState> {
   const keys = Object.keys(updates) as (keyof AddTaskType)[];
   if (!keys.length) return { ok: true };
 
