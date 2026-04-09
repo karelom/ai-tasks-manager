@@ -52,7 +52,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-slate-400 uppercase">Priority</label>
-            <TaskPriorityLabel data={task.priority} />
+            <TaskPriorityLabel data={task.priority} taskId={task.id} />
           </div>
         </div>
       </div>
