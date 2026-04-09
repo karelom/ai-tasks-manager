@@ -13,7 +13,7 @@ import {
   CommandShortcut,
 } from '@/components/ui/command';
 import { ResponseState } from '@/lib/actions';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 
 export interface InlineSelectOption<T> {
   value: T;
@@ -40,21 +40,47 @@ export function InlineSelect<T extends string | number>({
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentValue, setCurrentValue] = useState(data);
 
-  const handleSelect = async (newValue: T) => {
-    if (newValue === currentValue) return;
+  const handleSelect = useCallback(
+    async (newValue: T) => {
+      setOpen(false);
+      if (newValue === currentValue) return;
 
-    setIsUpdating(true);
-    const result = await onSave(newValue);
+      setIsUpdating(true);
 
-    if (result.ok) {
       setCurrentValue(newValue);
-      // toast.success(`${label} updated`);
-    } else {
-      // Revert if validation or server fails
-      // toast.error(result.error || 'Failed to update');
-    }
-    setIsUpdating(false);
-  };
+      const result = await onSave(newValue);
+      if (result.ok) {
+        // toast.success(`${label} updated`);
+      } else {
+        setCurrentValue(data);
+        // toast.error(result.error || 'Failed to update');
+      }
+
+      setIsUpdating(false);
+    },
+    [data, currentValue, onSave]
+  );
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (!open) return;
+
+      // Check if Command (Mac) or Control (Windows) is pressed
+      if (e.metaKey || e.ctrlKey) {
+        const option = options.find(
+          (opt) => opt.shortcut?.slice(-1).toLowerCase() === e.key.toLowerCase()
+        );
+
+        if (option) {
+          e.preventDefault();
+          handleSelect(option.value);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', down);
+    return () => document.removeEventListener('keydown', down);
+  }, [open, options, handleSelect]);
 
   return (
     <div className={cn('flex flex-col gap-2', { 'opacity-50 pointer-events-none': isUpdating })}>
@@ -75,7 +101,6 @@ export function InlineSelect<T extends string | number>({
                     value={option.label}
                     onSelect={() => {
                       handleSelect(option.value);
-                      setOpen(false);
                     }}
                     className="cursor-pointer"
                   >
