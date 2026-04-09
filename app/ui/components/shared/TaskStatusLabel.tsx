@@ -1,7 +1,7 @@
 'use client';
 
 import { TaskStatus } from '@/lib/definitions';
-import { InlineSelect, InlineSelectOption } from './InlineSelect';
+import { InlineSelect, InlineSelectOption } from '@/ui/components/shared/InlineSelect';
 import { updateTask } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 
@@ -45,7 +45,7 @@ function DisplayLabel({ data, className }: { data: TaskStatus; className?: strin
   return (
     <div
       className={cn(
-        'px-3 py-1 rounded-full text-xs font-medium max-w-max',
+        'px-3 py-1 rounded-full text-sm font-medium max-w-max',
         className,
         taskStatusClass(data)
       )}
