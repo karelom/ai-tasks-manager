@@ -30,7 +30,9 @@ export default function TaskStatusLabel({ data, taskId }: TaskStatusLabelProps) 
         options={STATUS_OPTIONS}
         shortcut="S"
         placeholder="Search status ..."
-        renderTrigger={(selected) => <DisplayLabel data={selected} />}
+        renderTrigger={(selected) => (
+          <DisplayLabel data={selected} className="cursor-pointer hover:shadow-md" />
+        )}
         onSave={handleStatusChange}
       />
     );
@@ -39,10 +41,14 @@ export default function TaskStatusLabel({ data, taskId }: TaskStatusLabelProps) 
   }
 }
 
-function DisplayLabel({ data }: { data: TaskStatus }) {
+function DisplayLabel({ data, className }: { data: TaskStatus; className?: string }) {
   return (
     <div
-      className={cn('px-3 py-1 rounded-full text-xs font-medium max-w-max', taskStatusClass(data))}
+      className={cn(
+        'px-3 py-1 rounded-full text-xs font-medium max-w-max',
+        className,
+        taskStatusClass(data)
+      )}
     >
       {data}
     </div>

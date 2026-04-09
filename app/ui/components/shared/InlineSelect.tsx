@@ -114,15 +114,10 @@ export function InlineSelect<T extends string | number>({
   // #endregion
 
   return (
-    <div className={cn('flex flex-col gap-2', { 'opacity-50 pointer-events-none': isUpdating })}>
+    <div className={cn('relative mb-2', { 'opacity-50 pointer-events-none': isUpdating })}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="cursor-pointer relative mb-2">
-            {renderTrigger(currentValue)}
-
-            <HintInvalidLabel data={invalid} />
-            <HintSavingLabel enable={isUpdating} />
-          </div>
+          <div>{renderTrigger(currentValue)}</div>
         </PopoverTrigger>
 
         <PopoverContent className="w-50 p-0 shadow-xl border-slate-200" align="start">
@@ -159,6 +154,9 @@ export function InlineSelect<T extends string | number>({
           </Command>
         </PopoverContent>
       </Popover>
+
+      <HintInvalidLabel data={invalid} />
+      <HintSavingLabel enable={isUpdating} />
     </div>
   );
 }
