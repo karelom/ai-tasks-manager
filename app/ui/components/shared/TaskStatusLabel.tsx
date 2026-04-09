@@ -11,10 +11,10 @@ interface TaskStatusLabelProps {
 }
 
 const STATUS_OPTIONS: InlineSelectOption<TaskStatus>[] = [
-  { value: TaskStatus.BACKLOG, label: 'Backlog', shortcut: '⌘B' },
-  { value: TaskStatus.PENDING, label: 'Pending', shortcut: '⌘P' },
-  { value: TaskStatus.IN_PROGRESS, label: 'In Progress', shortcut: '⌘I' },
-  { value: TaskStatus.COMPLETED, label: 'Completed', shortcut: '⌘C' },
+  { value: TaskStatus.BACKLOG, label: 'Backlog' },
+  { value: TaskStatus.PENDING, label: 'Pending' },
+  { value: TaskStatus.IN_PROGRESS, label: 'In Progress' },
+  { value: TaskStatus.COMPLETED, label: 'Completed' },
 ];
 
 export default function TaskStatusLabel({ data, taskId }: TaskStatusLabelProps) {
@@ -28,6 +28,8 @@ export default function TaskStatusLabel({ data, taskId }: TaskStatusLabelProps) 
       <InlineSelect<TaskStatus>
         data={data}
         options={STATUS_OPTIONS}
+        shortcut="S"
+        placeholder="Search status ..."
         renderTrigger={(selected) => <DisplayLabel data={selected} />}
         onSave={handleStatusChange}
       />

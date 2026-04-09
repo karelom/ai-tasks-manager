@@ -18,12 +18,12 @@ import { ReactNode, useCallback, useEffect, useState } from 'react';
 export interface InlineSelectOption<T> {
   value: T;
   label: string;
-  shortcut?: string;
 }
 
 interface InlineSelectProps<T> {
   data: T;
   options: InlineSelectOption<T>[];
+  shortcut?: string;
   placeholder?: string;
   renderTrigger: (selectedOption: T) => ReactNode;
   onSave: (value: T) => Promise<ResponseState>;
@@ -32,6 +32,7 @@ interface InlineSelectProps<T> {
 export function InlineSelect<T extends string | number>({
   data,
   options,
+  shortcut,
   placeholder,
   renderTrigger,
   onSave,
@@ -61,26 +62,44 @@ export function InlineSelect<T extends string | number>({
     [data, currentValue, onSave]
   );
 
+  // #region [ Global Key Listener ]
+
   useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (!open) return;
+    const handleGlobalDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || (e.target as HTMLElement).isContentEditable)
+        return;
 
-      // Check if Command (Mac) or Control (Windows) is pressed
-      if (e.metaKey || e.ctrlKey) {
-        const option = options.find(
-          (opt) => opt.shortcut?.slice(-1).toLowerCase() === e.key.toLowerCase()
-        );
+      if (e.key.toLowerCase() === shortcut?.toLowerCase()) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
 
-        if (option) {
+    document.addEventListener('keydown', handleGlobalDown);
+    return () => document.removeEventListener('keydown', handleGlobalDown);
+  }, [shortcut]);
+
+  useEffect(() => {
+    // Only bind number keys when menu is visible
+    if (!open) return;
+
+    const handleMenuDown = (e: KeyboardEvent) => {
+      if (/^[1-9]$/.test(e.key)) {
+        const index = parseInt(e.key) - 1;
+        const targetOption = options[index];
+
+        if (targetOption) {
           e.preventDefault();
-          handleSelect(option.value);
+          handleSelect(targetOption.value);
         }
       }
     };
 
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
+    document.addEventListener('keydown', handleMenuDown);
+    return () => document.removeEventListener('keydown', handleMenuDown);
   }, [open, options, handleSelect]);
+
+  // #endregion
 
   return (
     <div className={cn('flex flex-col gap-2', { 'opacity-50 pointer-events-none': isUpdating })}>
@@ -91,11 +110,15 @@ export function InlineSelect<T extends string | number>({
 
         <PopoverContent className="w-50 p-0 shadow-xl border-slate-200" align="start">
           <Command>
-            <CommandInput placeholder={placeholder ?? 'Search ...'} className="h-9" />
+            <CommandInput
+              shortcut={shortcut}
+              placeholder={placeholder ?? 'Search ...'}
+              className="h-9"
+            ></CommandInput>
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
-                {options.map((option) => (
+                {options.map((option, idx) => (
                   <CommandItem
                     key={String(option.value)}
                     value={option.label}
@@ -111,7 +134,7 @@ export function InlineSelect<T extends string | number>({
                       )}
                     />
                     {option.label}
-                    <CommandShortcut>{option.shortcut}</CommandShortcut>
+                    <CommandShortcut>{idx + 1}</CommandShortcut>
                   </CommandItem>
                 ))}
               </CommandGroup>
