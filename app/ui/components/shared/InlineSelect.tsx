@@ -116,7 +116,7 @@ export function InlineSelect<T extends string | number>({
   return (
     <div className={cn('relative mb-2', { 'opacity-50 pointer-events-none': isUpdating })}>
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild className="w-min">
+        <PopoverTrigger asChild className="w-max">
           <div>{renderTrigger(currentValue)}</div>
         </PopoverTrigger>
 
