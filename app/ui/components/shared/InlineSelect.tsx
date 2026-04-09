@@ -15,6 +15,7 @@ import {
 import { ResponseState } from '@/lib/actions';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
+import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 
 export interface InlineSelectOption<T> {
   value: T;
@@ -41,6 +42,7 @@ export function InlineSelect<T extends string | number>({
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentValue, setCurrentValue] = useState(data);
+  const [invalid, setInvalid] = useState<string>('');
 
   const handleSelect = useCallback(
     async (newValue: T) => {
@@ -51,11 +53,9 @@ export function InlineSelect<T extends string | number>({
 
       setCurrentValue(newValue);
       const result = await onSave(newValue);
-      if (result.ok) {
-        // toast.success(`${label} updated`);
-      } else {
+      if (!result.ok) {
         setCurrentValue(data);
-        // toast.error(result.error || 'Failed to update');
+        setInvalid(result.error || 'Failed to update');
       }
 
       setIsUpdating(false);
@@ -102,13 +102,25 @@ export function InlineSelect<T extends string | number>({
 
   // #endregion
 
+  // #region [ Invalid state methods ]
+
+  useEffect(() => {
+    if (invalid) {
+      const timer = setTimeout(() => setInvalid(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [invalid]);
+
+  // #endregion
+
   return (
     <div className={cn('flex flex-col gap-2', { 'opacity-50 pointer-events-none': isUpdating })}>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <div className="cursor-pointer relative">
+          <div className="cursor-pointer relative mb-2">
             {renderTrigger(currentValue)}
 
+            <HintInvalidLabel data={invalid} />
             <HintSavingLabel enable={isUpdating} />
           </div>
         </PopoverTrigger>

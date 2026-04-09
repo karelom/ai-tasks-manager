@@ -5,13 +5,14 @@ import { updateTask } from '@/lib/actions';
 import clsx from 'clsx';
 import { AddTaskSchema } from '@/lib/schemas';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
+import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 
 export function InlineTitle({ taskId, data }: { taskId: string; data: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(data);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [invalid, setInvalid] = useState<string | null>(null);
+  const [invalid, setInvalid] = useState<string>('');
 
   // #region [ static methods ]
 
@@ -43,7 +44,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
 
   useEffect(() => {
     if (invalid) {
-      const timer = setTimeout(() => setInvalid(null), 5000);
+      const timer = setTimeout(() => setInvalid(''), 5000);
       return () => clearTimeout(timer);
     }
   }, [invalid]);
@@ -55,7 +56,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
   const handleClick = () => setIsEditing(true);
 
   const handleBlur = async () => {
-    setInvalid(null);
+    setInvalid('');
 
     if (title === data) {
       setIsEditing(false);
@@ -87,7 +88,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
         break;
       case 'Escape':
         setTitle(data);
-        setInvalid(null);
+        setInvalid('');
         setIsEditing(false);
         break;
     }
@@ -115,12 +116,7 @@ export function InlineTitle({ taskId, data }: { taskId: string; data: string }) 
           disabled={isSaving}
         />
 
-        {invalid && (
-          <div className="absolute -bottom-5 left-0 text-xs font-medium text-red-500 animate-in slide-in-from-top-1 duration-200">
-            {invalid}
-          </div>
-        )}
-
+        <HintInvalidLabel data={invalid} />
         <HintSavingLabel enable={isSaving} />
       </div>
     );

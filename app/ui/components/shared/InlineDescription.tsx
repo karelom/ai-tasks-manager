@@ -14,11 +14,12 @@ import {
   NumberedListIcon,
 } from '@heroicons/react/24/outline';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
+import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 
 export function InlineDescription({ taskId, data }: { taskId: string; data: string }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [invalid, setInvalid] = useState<string | null>(null);
+  const [invalid, setInvalid] = useState<string>('');
 
   // #region [ TipTap configurations ]
 
@@ -48,7 +49,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       },
     },
     onBlur: async ({ editor }) => {
-      setInvalid(null);
+      setInvalid('');
 
       const description = editor.getHTML();
       if (description === data) {
@@ -95,6 +96,13 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       editor.commands.setContent(data);
     }
   }, [data, editor]);
+
+  useEffect(() => {
+    if (invalid) {
+      const timer = setTimeout(() => setInvalid(''), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [invalid]);
 
   // #endregion
 
@@ -154,13 +162,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
           Add a description...
         </span>
       )}
-
-      {invalid && (
-        <div className="absolute -bottom-5 left-0 text-xs font-medium text-red-500 animate-in slide-in-from-top-1 duration-200">
-          {invalid}
-        </div>
-      )}
-
+      <HintInvalidLabel data={invalid} />
       <HintSavingLabel enable={isSaving} />
     </div>
   );
