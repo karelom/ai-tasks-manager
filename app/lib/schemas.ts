@@ -8,10 +8,7 @@ export const AddTaskSchema = z.object({
   description: z.string(),
   status: z.enum(TaskStatus),
   priority: z.enum(TaskPriority),
-  dueAt: z.preprocess((val) => {
-    if (isInvalidDate(val)) return null;
-    return val;
-  }, z.date().nullable()),
+  dueAt: z.date().nullable(),
 });
 export const defaultAddTask = {
   projectId: null,

@@ -2,12 +2,19 @@
 
 import { createTask } from '@/lib/actions';
 import { TaskPriority, TaskStatus } from '@/lib/definitions';
-import { AddTaskSchema, AddTaskType, defaultAddTask, isInvalidDate } from '@/lib/schemas';
+import { AddTaskSchema, AddTaskType, defaultAddTask } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
-import { useForm, useWatch } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { CalendarIcon } from 'lucide-react';
+import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
+import { Field, FieldLabel } from '@/components/ui/field';
+import { cn, formatLocaleDate } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -32,11 +39,6 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
     },
   });
 
-  const dueDateValue = useWatch({
-    control,
-    name: 'dueAt',
-  });
-
   const onSubmit = async (data: AddTaskType) => {
     const result = await createTask(data);
     if (result?.ok) {
@@ -58,7 +60,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
             {...register('title')}
             type="text"
             placeholder="Title of the task."
-            className={clsx(
+            className={cn(
               'col-auto px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2',
               errors.title
                 ? 'border-red-500 focus:ring-red-200'
@@ -77,7 +79,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
             id="description"
             {...register('description')}
             placeholder="Write down some memos ..."
-            className={clsx(
+            className={cn(
               'col-auto px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2',
               errors.description
                 ? 'border-red-500 focus:ring-red-200'
@@ -98,7 +100,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
               <select
                 id="status"
                 {...register('status')}
-                className={clsx(
+                className={cn(
                   'w-full px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2 cursor-pointer appearance-none',
                   errors.status
                     ? 'border-red-500 focus:ring-red-200'
@@ -128,7 +130,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
               <select
                 id="priority"
                 {...register('priority')}
-                className={clsx(
+                className={cn(
                   'w-full px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2 cursor-pointer appearance-none',
                   errors.priority
                     ? 'border-red-500 focus:ring-red-200'
@@ -150,33 +152,72 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="dueAt" className="text-sm font-medium text-slate-700">
-              Due Date
-            </label>
-            <div className="relative">
-              <input
-                id="dueAt"
-                {...register('dueAt', {
-                  valueAsDate: true,
-                })}
-                type="date"
-                className={clsx(
-                  'w-full px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2 cursor-pointer transition-colors',
-                  '[&::-webkit-calendar-picker-indicator]:cursor-pointer',
-                  errors.dueAt
-                    ? 'border-red-500 focus:ring-red-200'
-                    : 'border-slate-200 focus:ring-blue-500'
-                )}
-                onClick={(e) => e.currentTarget.showPicker()}
-                onKeyDown={(e) => e.preventDefault()}
-              />
-              {isInvalidDate(dueDateValue) && (
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 bg-white pointer-events-none">
-                  Select a date.
-                </span>
+            <Controller
+              name="dueAt"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="relative">
+                  <FieldLabel htmlFor={field.name}>
+                    <div className="text-sm font-medium text-slate-700">Due Date</div>
+                  </FieldLabel>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        id={field.name}
+                        variant="outline"
+                        className={cn(
+                          'w-full p-5 font-normal border rounded-lg bg-white border-slate-200 cursor-pointer transition-colors',
+                          'focus:outline-none focus:ring-2 focus:ring-blue-500',
+                          !field.value && 'text-muted-foreground'
+                        )}
+                        aria-invalid={fieldState.invalid}
+                      >
+                        {field.value ? formatLocaleDate(field.value) : <span>Select a date</span>}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value ?? undefined}
+                        onSelect={(val) => {
+                          field.onChange(val);
+                        }}
+                        disabled={(date) => date < new Date() || date < new Date('1900-01-01')}
+                        className="rounded-lg border"
+                        autoFocus
+                      />
+
+                      <div className="px-3 pb-2 border-slate-100 flex items-center justify-between gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-xs text-slate-500 hover:text-red-600 h-8 px-2"
+                          onClick={() => {
+                            field.onChange(null);
+                          }}
+                        >
+                          Clear
+                        </Button>
+
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          className="text-xs h-8 px-2"
+                          onClick={() => field.onChange(new Date())}
+                        >
+                          Today
+                        </Button>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
+                  {fieldState.invalid && <HintInvalidLabel data={fieldState.error?.message} />}
+                </Field>
               )}
-            </div>
-            {errors.dueAt && <p className="text-xs text-red-500">{errors.dueAt.message}</p>}
+            />
+            {/* <InlineDatePicker /> */}
           </div>
         </div>
       </div>
