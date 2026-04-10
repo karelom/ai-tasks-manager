@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 /**
  * An absolute Label hint for invalid field.
  *
@@ -5,10 +7,21 @@
  * @param data text for showing the label
  * @returns
  */
-export default function HintInvalidLabel({ data }: { data: string }) {
+export default function HintInvalidLabel({
+  data,
+  className,
+}: {
+  data?: string;
+  className?: string;
+}) {
   return (
     data && (
-      <div className="absolute -bottom-5 left-0 text-xs font-medium text-red-500 animate-in slide-in-from-top-1 duration-200">
+      <div
+        className={cn(
+          'absolute -bottom-1 translate-y-full left-0 text-xs font-medium text-red-500 animate-in slide-in-from-top-1 duration-200',
+          className
+        )}
+      >
         {data}
       </div>
     )
