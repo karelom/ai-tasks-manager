@@ -5,16 +5,10 @@ import { TaskPriority, TaskStatus } from '@/lib/definitions';
 import { AddTaskSchema, AddTaskType, defaultAddTask } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { CalendarIcon } from 'lucide-react';
 import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
-import { Field, FieldLabel } from '@/components/ui/field';
-import { cn, formatLocaleDate } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
+import { cn } from '@/lib/utils';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -151,74 +145,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
             {errors.priority && <p className="text-xs text-red-500">{errors.priority.message}</p>}
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Controller
-              name="dueAt"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="relative">
-                  <FieldLabel htmlFor={field.name}>
-                    <div className="text-sm font-medium text-slate-700">Due Date</div>
-                  </FieldLabel>
-
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        id={field.name}
-                        variant="outline"
-                        className={cn(
-                          'w-full p-5 font-normal border rounded-lg bg-white border-slate-200 cursor-pointer transition-colors',
-                          'focus:outline-none focus:ring-2 focus:ring-blue-500',
-                          !field.value && 'text-muted-foreground'
-                        )}
-                        aria-invalid={fieldState.invalid}
-                      >
-                        {field.value ? formatLocaleDate(field.value) : <span>Select a date</span>}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value ?? undefined}
-                        onSelect={(val) => {
-                          field.onChange(val);
-                        }}
-                        disabled={(date) => date < new Date() || date < new Date('1900-01-01')}
-                        className="rounded-lg border"
-                        autoFocus
-                      />
-
-                      <div className="px-3 pb-2 border-slate-100 flex items-center justify-between gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="text-xs text-slate-500 hover:text-red-600 h-8 px-2"
-                          onClick={() => {
-                            field.onChange(null);
-                          }}
-                        >
-                          Clear
-                        </Button>
-
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="text-xs h-8 px-2"
-                          onClick={() => field.onChange(new Date())}
-                        >
-                          Today
-                        </Button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-
-                  {fieldState.invalid && <HintInvalidLabel data={fieldState.error?.message} />}
-                </Field>
-              )}
-            />
-            {/* <InlineDatePicker /> */}
-          </div>
+          <InlineDatePicker name="dueAt" control={control} />
         </div>
       </div>
 
