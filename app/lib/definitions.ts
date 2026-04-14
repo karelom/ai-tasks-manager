@@ -3,9 +3,9 @@ export interface Project {
   name: string;
   description: string;
   colorCode: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 export interface Task {
@@ -19,10 +19,10 @@ export interface Task {
   priority: TaskPriority;
   /** for LLM suggestion */
   aiSummary: string;
-  dueAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  dueAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
 }
 
 export enum TaskStatus {

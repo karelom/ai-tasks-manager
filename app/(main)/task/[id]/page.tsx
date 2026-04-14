@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { InlineTitle } from '@/ui/components/shared/InlineTitle';
 import { InlineDescription } from '@/ui/components/shared/InlineDescription';
-// import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
+import { TaskDatePickerLabel } from '@/ui/components/shared/TaskDatePickerLabel';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-slate-400 uppercase">Due date</label>
-            {/* <InlineDatePicker /> */}
+            <TaskDatePickerLabel name="dueAt" data={task.dueAt} taskId={task.id} />
           </div>
         </div>
       </div>

@@ -7,8 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
 import { cn } from '@/lib/utils';
+import { TaskDatePickerLabel } from '@/ui/components/shared/TaskDatePickerLabel';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -145,7 +145,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
             {errors.priority && <p className="text-xs text-red-500">{errors.priority.message}</p>}
           </div>
 
-          <InlineDatePicker name="dueAt" control={control} />
+          <TaskDatePickerLabel name="dueAt" control={control} />
         </div>
       </div>
 
