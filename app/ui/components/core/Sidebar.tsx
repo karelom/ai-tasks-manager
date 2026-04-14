@@ -33,7 +33,12 @@ export default function Sidebar() {
   return (
     <>
       <aside className="hidden md:flex w-64 bg-slate-50 border-r border-slate-200 h-screen flex-col sticky top-0">
-        <div className="p-6 font-bold text-xl tracking-tight text-slate-900">Brain.ai</div>
+        <div className="m-6 font-bold text-xl tracking-tight text-slate-900 border-b">
+          Brain.ai
+          <span className="p-4 border-slate-200 text-xs text-slate-400 text-center">
+            v1.0.0-beta
+          </span>
+        </div>
         <nav className="flex-1 px-4 space-y-2">
           {links.map((link) => {
             const LinkIcon = link.icon;
@@ -55,9 +60,6 @@ export default function Sidebar() {
             );
           })}
         </nav>
-        <div className="p-4 border-t border-slate-200 text-xs text-slate-400 text-center">
-          v1.0.0-beta
-        </div>
       </aside>
 
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 px-6 h-16 flex items-center justify-around shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
