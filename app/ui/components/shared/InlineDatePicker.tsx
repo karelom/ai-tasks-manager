@@ -8,22 +8,28 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Field, FieldLabel } from '@/components/ui/field';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
+import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 
-interface InlineDarePickerProps<T extends FieldValues> {
+interface InlineDatePickerProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
+  isUpdating?: boolean;
 }
 
 export function InlineDatePicker<T extends FieldValues>({
   name,
   control,
-}: InlineDarePickerProps<T>) {
+  isUpdating,
+}: InlineDatePickerProps<T>) {
   return (
     <Controller
       name={name}
       control={control}
       render={({ field, fieldState }) => (
-        <Field data-invalid={fieldState.invalid} className="relative">
+        <Field
+          data-invalid={fieldState.invalid}
+          className={cn('relative', { 'opacity-50 pointer-events-none': isUpdating })}
+        >
           <FieldLabel htmlFor={field.name}>
             <div className="text-sm font-medium text-slate-700">Due Date</div>
           </FieldLabel>
@@ -81,6 +87,7 @@ export function InlineDatePicker<T extends FieldValues>({
           </Popover>
 
           {fieldState.invalid && <HintInvalidLabel data={fieldState.error?.message} />}
+          <HintSavingLabel enable={isUpdating} className="right-0 top-[unset] -bottom-6" />
         </Field>
       )}
     />

@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 /**
  * An absolute Label hint for save progress.
  *
@@ -5,10 +7,21 @@
  * @param enable true when showing the label
  * @returns
  */
-export default function HintSavingLabel({ enable }: { enable: boolean }) {
+export default function HintSavingLabel({
+  enable,
+  className,
+}: {
+  enable?: boolean;
+  className?: string;
+}) {
   return (
-    enable && (
-      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse uppercase tracking-wider">
+    !enable && (
+      <span
+        className={cn(
+          'absolute right-4 top-1/2 max-w-min max-h-min -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse uppercase tracking-wider',
+          className
+        )}
+      >
         Saving...
       </span>
     )

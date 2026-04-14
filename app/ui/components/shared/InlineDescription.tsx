@@ -52,6 +52,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       setInvalid('');
 
       const description = editor.getHTML();
+      // TODO: How to tell different between empty string or making it empty?
       if (description === data) {
         setIsEditing(false);
         return;
@@ -163,7 +164,7 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
         </span>
       )}
       <HintInvalidLabel data={invalid} />
-      <HintSavingLabel enable={isSaving} />
+      <HintSavingLabel enable={isSaving} className="top-[unset] bottom-0" />
     </div>
   );
 }
