@@ -15,7 +15,7 @@ export default function HintSavingLabel({
   className?: string;
 }) {
   return (
-    !enable && (
+    enable && (
       <span
         className={cn(
           'absolute right-4 top-1/2 max-w-min max-h-min -translate-y-1/2 text-xs text-slate-400 cursor-wait animate-pulse uppercase tracking-wider',
