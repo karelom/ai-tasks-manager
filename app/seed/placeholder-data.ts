@@ -35,7 +35,7 @@ const tasks: Omit<Task, 'id' | 'parentId' | 'dueAt' | 'createdAt' | 'updatedAt'>
     status: TaskStatus.PENDING,
     priority: TaskPriority.LOW,
     aiSummary: 'Likely a CSS transition conflict.',
-    deletedAt: '2026-03-23 10:00:00Z',
+    deletedAt: new Date('2026-03-23 10:00:00Z'),
   },
   {
     projectId: projects[0].id,
