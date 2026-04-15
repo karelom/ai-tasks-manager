@@ -24,7 +24,9 @@ interface InlineModeProps extends BaseProps {
 
 type InlineDatePickerProps<T extends FieldValues> = FormModeProps<T> | InlineModeProps;
 
-export function TaskDatePickerLabel<T extends FieldValues>(props: InlineDatePickerProps<T>) {
+export default function TaskDatePickerLabel<T extends FieldValues>(
+  props: InlineDatePickerProps<T>
+) {
   const isFormMode = 'control' in props && 'name' in props;
   return isFormMode ? <InlineDatePicker {...props} /> : <DatePickerController {...props} />;
 }

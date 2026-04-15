@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
-import { TaskDatePickerLabel } from '@/ui/components/shared/TaskDatePickerLabel';
+import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
 
 export interface CreateTaskProps {
   projectId?: string | null;
