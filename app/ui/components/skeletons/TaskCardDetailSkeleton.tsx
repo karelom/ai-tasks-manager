@@ -12,6 +12,7 @@ export default function TaskCardDetailSkeleton() {
       status={<TaskStatusLabelSkeleton />}
       priority={<TaskPriorityLabelSkeleton />}
       dueDate={<TaskDatePickerLabelSkeleton />}
+      deleteBtn={<DeleteBtn />}
     />
   );
 }
@@ -43,6 +44,14 @@ function InlineDescriptionSkeleton() {
       <div className="h-4 w-1/4 bg-slate-100 rounded-lg"></div>
       <div className="h-4 w-2/5 bg-slate-100 rounded-lg"></div>
       <div className="h-4 w-2/3 bg-slate-100 rounded-lg"></div>
+    </div>
+  );
+}
+
+function DeleteBtn() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-5 w-22 bg-slate-200 rounded-xs"></div>
     </div>
   );
 }
