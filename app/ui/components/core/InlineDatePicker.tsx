@@ -21,18 +21,39 @@ interface InlineDatePickerProps<T extends FieldValues> {
     field: ControllerRenderProps<T, Path<T>>
   ) => Promise<ResponseState>;
   renderLabel?: ReactNode;
+  shortcut?: string;
 }
 
 export function InlineDatePicker<T extends FieldValues>({
   name,
   control,
-  renderLabel,
   trigger,
   customOnSelect,
+  renderLabel,
+  shortcut,
 }: InlineDatePickerProps<T>) {
   const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [invalid, setInvalid] = useState<string>('');
+
+  // #region [ Global Key Listener ]
+
+  useEffect(() => {
+    const handleGlobalDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || (e.target as HTMLElement).isContentEditable)
+        return;
+
+      if (e.key.toLowerCase() === shortcut?.toLowerCase()) {
+        e.preventDefault();
+        setOpen(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleGlobalDown);
+    return () => document.removeEventListener('keydown', handleGlobalDown);
+  }, [shortcut]);
+
+  // #endregion
 
   useEffect(() => {
     if (invalid) {

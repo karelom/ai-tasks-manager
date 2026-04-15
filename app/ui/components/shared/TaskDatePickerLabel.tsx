@@ -57,6 +57,7 @@ function DatePickerController({ name, data, taskId, renderLabel }: InlineModePro
       trigger={trigger}
       customOnSelect={handleInlineSave}
       renderLabel={renderLabel}
+      shortcut="D"
     />
   );
 }
