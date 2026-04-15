@@ -45,7 +45,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </div>
 
         {/* Right Column: Metadata */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
+        <div className="grid md:grid-cols-1 grid-cols-2 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-slate-400 uppercase">Status</label>
             <TaskStatusLabel data={task.status} taskId={task.id} />
