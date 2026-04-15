@@ -33,18 +33,22 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
           router.push('/all-task');
           router.refresh();
 
-          toast.success('Task archived successfully', {
-            duration: 5000,
-            action: {
-              label: 'Undo',
-              onClick: async () => {
-                const restoreResult = await restoreTask(taskId);
-                if (restoreResult.ok) {
-                  toast.success('Task restored');
-                  router.push(`/task/${taskId}`);
-                }
-              },
-            },
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              toast.success('Task archived successfully', {
+                duration: 5000,
+                action: {
+                  label: 'Undo',
+                  onClick: async () => {
+                    const restoreResult = await restoreTask(taskId);
+                    if (restoreResult.ok) {
+                      toast.success('Task restored');
+                      router.push(`/task/${taskId}`);
+                    }
+                  },
+                },
+              });
+            });
           });
         } else {
           toast.error(result.error || 'Failed to archive task');
