@@ -145,7 +145,11 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
             {errors.priority && <p className="text-xs text-red-500">{errors.priority.message}</p>}
           </div>
 
-          <TaskDatePickerLabel name="dueAt" control={control} />
+          <TaskDatePickerLabel
+            name="dueAt"
+            control={control}
+            renderLabel={<div className="text-sm font-medium text-slate-700">Due Date</div>}
+          />
         </div>
       </div>
 

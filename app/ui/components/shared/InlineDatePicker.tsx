@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Field, FieldLabel } from '@/components/ui/field';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { ResponseState } from '@/lib/actions';
 
 interface InlineDatePickerProps<T extends FieldValues> {
@@ -20,11 +20,13 @@ interface InlineDatePickerProps<T extends FieldValues> {
     newVal: Date | null,
     field: ControllerRenderProps<T, Path<T>>
   ) => Promise<ResponseState>;
+  renderLabel?: ReactNode;
 }
 
 export function InlineDatePicker<T extends FieldValues>({
   name,
   control,
+  renderLabel,
   trigger,
   customOnSelect,
 }: InlineDatePickerProps<T>) {
@@ -75,9 +77,7 @@ export function InlineDatePicker<T extends FieldValues>({
             data-invalid={fieldState.invalid}
             className={cn('relative', { 'opacity-50 pointer-events-none': isUpdating })}
           >
-            <FieldLabel htmlFor={field.name}>
-              <div className="text-sm font-medium text-slate-700">Due Date</div>
-            </FieldLabel>
+            <FieldLabel htmlFor={field.name}>{renderLabel}</FieldLabel>
 
             <Popover>
               <PopoverTrigger asChild>

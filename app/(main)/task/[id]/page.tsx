@@ -57,8 +57,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold text-slate-400 uppercase">Due date</label>
-            <TaskDatePickerLabel name="dueAt" data={task.dueAt} taskId={task.id} />
+            <TaskDatePickerLabel
+              name="dueAt"
+              data={task.dueAt}
+              taskId={task.id}
+              renderLabel={
+                <label className="text-xs font-bold text-slate-400 uppercase">Due date</label>
+              }
+            />
           </div>
         </div>
       </div>

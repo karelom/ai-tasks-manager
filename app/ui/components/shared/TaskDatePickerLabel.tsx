@@ -5,15 +5,18 @@ import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
 import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateTask } from '@/lib/actions';
+import { ReactNode } from 'react';
 
-// Mode A: React Hook Form
-interface FormModeProps<T extends FieldValues> {
+interface BaseProps {
+  renderLabel?: ReactNode;
+}
+
+interface FormModeProps<T extends FieldValues> extends BaseProps {
   name: Path<T>;
   control: Control<T>;
 }
 
-// Mode B: Inline Auto-save
-interface InlineModeProps {
+interface InlineModeProps extends BaseProps {
   name: Path<AddTaskType>;
   data: Date | null;
   taskId: string;
@@ -26,7 +29,7 @@ export function TaskDatePickerLabel<T extends FieldValues>(props: InlineDatePick
   return isFormMode ? <InlineDatePicker {...props} /> : <DatePickerController {...props} />;
 }
 
-function DatePickerController({ name, data, taskId }: InlineModeProps) {
+function DatePickerController({ name, data, taskId, renderLabel }: InlineModeProps) {
   const singleSchema = AddTaskSchema.pick({ [name]: true } as { T: boolean });
 
   const { control, trigger } = useForm({
@@ -53,6 +56,7 @@ function DatePickerController({ name, data, taskId }: InlineModeProps) {
       control={control}
       trigger={trigger}
       customOnSelect={handleInlineSave}
+      renderLabel={renderLabel}
     />
   );
 }
