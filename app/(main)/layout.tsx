@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/sonner';
 import Header from '@/ui/components/core/Header';
 import Sidebar from '@/ui/components/core/Sidebar';
 import React from 'react';
@@ -20,6 +21,7 @@ export default function Layout({
             {children}
             {modal}
           </main>
+          <Toaster />
         </div>
       </div>
     </div>

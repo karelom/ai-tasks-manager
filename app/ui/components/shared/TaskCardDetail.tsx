@@ -6,6 +6,7 @@ import TaskPriorityLabel from '@/ui/components/shared/TaskPriorityLabel';
 import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
 import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
 import { ReactNode } from 'react';
+import { DeleteTaskButton } from './DeleteTaskButton';
 
 interface TaskCardDetailProps {
   id: string;
@@ -38,6 +39,7 @@ export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
           }
         />
       }
+      deleteBtn={<DeleteTaskButton taskId={task.id} />}
     />
   );
 }
@@ -49,6 +51,7 @@ interface TaskCardDetailLayoutProps {
   status: ReactNode;
   priority: ReactNode;
   dueDate: ReactNode;
+  deleteBtn: ReactNode;
 }
 export function TaskCardDetailLayout({
   title,
@@ -57,9 +60,10 @@ export function TaskCardDetailLayout({
   status,
   priority,
   dueDate,
+  deleteBtn,
 }: TaskCardDetailLayoutProps) {
   return (
-    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="max-w-5xl mx-auto grid md:grid-cols-3 grid-cols-1 gap-8">
       {/* Left Column: Content */}
       <div className="md:col-span-2 space-y-6">
         {title}
@@ -75,18 +79,25 @@ export function TaskCardDetailLayout({
       </div>
 
       {/* Right Column: Metadata */}
-      <div className="grid md:grid-cols-1 grid-cols-2 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-slate-400 uppercase">Status</label>
-          {status}
+      <div className="flex flex-col gap-5">
+        <div className="grid md:grid-cols-1 grid-cols-2 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-400 uppercase">Status</label>
+            {status}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-bold text-slate-400 uppercase">Priority</label>
+            {priority}
+          </div>
+
+          {dueDate}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-slate-400 uppercase">Priority</label>
-          {priority}
+        <div className="grid grid-cols-1 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
+          <label className="text-xs font-bold text-slate-400 uppercase">Settings</label>
+          {deleteBtn}
         </div>
-
-        {dueDate}
       </div>
     </div>
   );

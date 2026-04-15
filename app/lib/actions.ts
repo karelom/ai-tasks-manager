@@ -55,3 +55,38 @@ export async function updateTask(
     return { ok: false, error: 'Database Error: Failed to Update Task.' };
   }
 }
+
+export async function deleteTask(id: string): Promise<ResponseState> {
+  try {
+    await sql`
+      UPDATE tasks 
+      SET deleted_at = NOW() 
+      WHERE id = ${id}
+    `;
+
+    revalidatePath('/all-task');
+    revalidatePath(`/task/${id}`);
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to soft-delete task:', err);
+    return {
+      ok: false,
+      error: 'Database Error: Failed to Archive Task.',
+    };
+  }
+}
+
+export async function restoreTask(id: string): Promise<ResponseState> {
+  try {
+    await sql`UPDATE tasks SET deleted_at = NULL WHERE id = ${id}`;
+
+    revalidatePath('/all-task');
+    revalidatePath(`/task/${id}`);
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to restore task:', err);
+    return { ok: false, error: 'Database Error: Failed to restore task.' };
+  }
+}
