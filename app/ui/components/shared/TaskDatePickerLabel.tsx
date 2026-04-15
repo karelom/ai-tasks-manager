@@ -1,7 +1,7 @@
 'use client';
 
 import { Control, ControllerRenderProps, FieldValues, Path, useForm } from 'react-hook-form';
-import { InlineDatePicker } from '@/ui/components/shared/InlineDatePicker';
+import { InlineDatePicker } from '@/ui/components/core/InlineDatePicker';
 import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateTask } from '@/lib/actions';

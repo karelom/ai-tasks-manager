@@ -4,8 +4,8 @@ import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
-import { InlineTitle } from '@/ui/components/shared/InlineTitle';
-import { InlineDescription } from '@/ui/components/shared/InlineDescription';
+import { InlineTitle } from '@/ui/components/core/InlineTitle';
+import { InlineDescription } from '@/ui/components/core/InlineDescription';
 import { TaskDatePickerLabel } from '@/ui/components/shared/TaskDatePickerLabel';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {

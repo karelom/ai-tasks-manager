@@ -1,7 +1,7 @@
 'use client';
 
 import { TaskStatus } from '@/lib/definitions';
-import { InlineSelect, InlineSelectOption } from '@/ui/components/shared/InlineSelect';
+import { InlineSelect, InlineSelectOption } from '@/ui/components/core/InlineSelect';
 import { updateTask } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 

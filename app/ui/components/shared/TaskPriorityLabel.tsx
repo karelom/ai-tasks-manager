@@ -3,7 +3,7 @@
 import { updateTask } from '@/lib/actions';
 import { TaskPriority } from '@/lib/definitions';
 import { cn } from '@/lib/utils';
-import { InlineSelect, InlineSelectOption } from '@/ui/components/shared/InlineSelect';
+import { InlineSelect, InlineSelectOption } from '@/ui/components/core/InlineSelect';
 import { ChartBarIcon } from '@heroicons/react/24/outline';
 
 interface TaskPriorityLabelProps {
