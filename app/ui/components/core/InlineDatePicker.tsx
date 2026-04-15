@@ -30,6 +30,7 @@ export function InlineDatePicker<T extends FieldValues>({
   trigger,
   customOnSelect,
 }: InlineDatePickerProps<T>) {
+  const [open, setOpen] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [invalid, setInvalid] = useState<string>('');
 
@@ -47,6 +48,7 @@ export function InlineDatePicker<T extends FieldValues>({
     val: Date | null;
     field: ControllerRenderProps<T, Path<T>>;
   }) => {
+    setOpen(false);
     setInvalid('');
 
     const oldValue = field.value;
@@ -79,7 +81,7 @@ export function InlineDatePicker<T extends FieldValues>({
           >
             <FieldLabel htmlFor={field.name}>{renderLabel}</FieldLabel>
 
-            <Popover>
+            <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
                 <Button
                   id={field.name}
