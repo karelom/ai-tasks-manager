@@ -16,7 +16,7 @@ export default function Layout({
 
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <main className="flex-1 p-8 bg-slate-50/50 overflow-y-auto">
+          <main className="flex-1 md:mb-0 mb-16 p-8 bg-slate-50/50 overflow-y-auto">
             {children}
             {modal}
           </main>
