@@ -3,9 +3,41 @@
 import postgres from 'postgres';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { Task } from '@/lib/definitions';
 import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
+
+export async function fetchTasks(isDeleted = false) {
+  try {
+    const data = await sql<Task[]>`
+      SELECT * FROM tasks 
+      WHERE (deleted_at IS NOT NULL) = ${isDeleted}
+      ORDER BY created_at DESC
+    `;
+
+    return data;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch tasks data.');
+  }
+}
+
+export async function fetchActiveTask(taskId: string) {
+  if (!taskId) return;
+
+  try {
+    const data = await sql<Task[]>`
+      SELECT * FROM tasks
+      WHERE id = ${taskId} AND deleted_at IS NULL
+    `;
+
+    return data[0] ?? null;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch specific task data.');
+  }
+}
 
 export async function createTask(payload: AddTaskType) {
   const validatedFields = AddTaskSchema.safeParse(payload);
@@ -19,6 +51,7 @@ export async function createTask(payload: AddTaskType) {
     await sql`
       INSERT INTO tasks (project_id, parent_id, title, description, status, priority, due_at)
       VALUES (${projectId}, ${parentId}, ${title}, ${description}, ${status}, ${priority}, ${dueAt})
+      1
     `;
   } catch (err) {
     console.error('Failed to create task:', err);
@@ -46,6 +79,7 @@ export async function updateTask(
       UPDATE tasks 
       SET ${sql(updates, ...keys)} 
       WHERE id = ${id}
+      1
     `;
 
     revalidatePath(`/task/${id}`);
