@@ -1,4 +1,4 @@
-import { Project, Task, TaskPriority, TaskStatus } from '@/lib/definitions';
+import { Project, Task, TaskPlanVariant, TaskPriority, TaskStatus } from '@/lib/definitions';
 
 const projects: Omit<Project, 'createdAt' | 'updatedAt' | 'deletedAt'>[] = [
   {
@@ -48,4 +48,64 @@ const tasks: Omit<Task, 'id' | 'parentId' | 'dueAt' | 'createdAt' | 'updatedAt'>
   },
 ];
 
-export { projects, tasks };
+const taskPlanVariants: Omit<TaskPlanVariant, 'id' | 'groupId' | 'createdAt'>[] = [
+  {
+    input: 'Learn English',
+    refinementContext: '',
+    steps: [
+      {
+        title: 'Set learning goals',
+        description:
+          'Define specific English language skills to improve, such as speaking, writing, or vocabulary.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Choose learning resources',
+        description: 'Select books, online courses, or apps that will aid in learning English.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Create a study schedule',
+        description: 'Establish a regular time each day or week dedicated to learning English.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Practice speaking',
+        description: 'Engage in conversations with native speakers or language exchange partners.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Take assessments',
+        description: 'Regularly evaluate progress through quizzes or tests to measure improvement.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Join a language group',
+        description: 'Participate in local or online groups focused on English language practice.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+      {
+        title: 'Review and adjust goals',
+        description: 'Periodically reassess learning goals and adjust strategies as needed.',
+        status: TaskStatus.BACKLOG,
+        priority: TaskPriority.NONE,
+        dueAt: null,
+      },
+    ],
+    isBase: true,
+  },
+];
+
+export { projects, tasks, taskPlanVariants };

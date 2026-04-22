@@ -1,13 +1,13 @@
 import postgres from 'postgres';
-import { projects, tasks } from './placeholder-data';
+import { projects, tasks, taskPlanVariants } from './placeholder-data';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function GET() {
   try {
     await sql.begin(async () => {
-      await seedProjects();
-      seedTasks();
+      seedProjects().then(() => seedTasks());
+      seedTaskPlanGroups().then(() => seedTaskPlanVariants());
     });
     return Response.json({ message: 'Database seeded successfully' });
   } catch (err) {
@@ -62,7 +62,7 @@ async function seedTasks() {
   const insertTasks = await Promise.all(
     tasks.map(
       (t) => sql`
-        INSERT INTO tasks (project_id, title, description, status, priority, ai_summary, deleted_at)
+        INSERT INTO tasks  (project_id, title, description, status, priority, ai_summary, deleted_at)
         VALUES (${t.projectId}, ${t.title}, ${t.description}, ${t.status}, ${t.priority}, ${t.aiSummary}, ${t.deletedAt})
         ON CONFLICT (id) DO NOTHING;
       `
@@ -70,4 +70,40 @@ async function seedTasks() {
   );
 
   return insertTasks;
+}
+
+async function seedTaskPlanGroups() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS task_plan_groups (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      normalized_input TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
+}
+
+async function seedTaskPlanVariants() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS task_plan_variants (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      group_id UUID REFERENCES task_plan_groups(id),
+      input TEXT NOT NULL,
+      refinement_context TEXT,
+      steps JSONB NOT NULL,
+      is_base BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+  `;
+
+  const insertVariants = await Promise.all(
+    taskPlanVariants.map(
+      (v) => sql`
+        INSERT INTO task_plan_variants (input, refinement_context, steps, is_base)
+        VALUES (${v.input}, ${v.refinementContext}, ${JSON.stringify(v.steps)}, ${v.isBase})
+        ON CONFLICT (id) DO NOTHING;
+      `
+    )
+  );
+
+  return insertVariants;
 }
