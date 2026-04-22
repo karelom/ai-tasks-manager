@@ -51,7 +51,6 @@ export async function createTask(payload: AddTaskType) {
     await sql`
       INSERT INTO tasks (project_id, parent_id, title, description, status, priority, due_at)
       VALUES (${projectId}, ${parentId}, ${title}, ${description}, ${status}, ${priority}, ${dueAt})
-      1
     `;
   } catch (err) {
     console.error('Failed to create task:', err);
@@ -77,9 +76,8 @@ export async function updateTask(
   try {
     await sql`
       UPDATE tasks 
-      SET ${sql(updates, ...keys)} 
+      SET ${sql(updates)} 
       WHERE id = ${id}
-      1
     `;
 
     revalidatePath(`/task/${id}`);
