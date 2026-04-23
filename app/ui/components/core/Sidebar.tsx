@@ -1,11 +1,7 @@
 'use client';
 
-import {
-  AdjustmentsHorizontalIcon,
-  HomeIcon,
-  RectangleStackIcon,
-} from '@heroicons/react/24/outline';
-import clsx from 'clsx';
+import { cn } from '@/lib/utils';
+import { House, NotebookText, Package, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -13,17 +9,22 @@ const links = [
   {
     name: 'Dashboard',
     href: '/dashboard',
-    icon: HomeIcon,
+    icon: House,
+  },
+  {
+    name: 'All Projects',
+    href: '/all-project',
+    icon: Package,
   },
   {
     name: 'All Tasks',
     href: '/all-task',
-    icon: RectangleStackIcon,
+    icon: NotebookText,
   },
   {
     name: 'Settings',
     href: '/settings',
-    icon: AdjustmentsHorizontalIcon,
+    icon: SlidersHorizontal,
   },
 ];
 
@@ -47,7 +48,7 @@ export default function Sidebar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={clsx(
+                className={cn(
                   'flex h-12 p-4 items-center gap-2 rounded-lg transition-all',
                   isActive
                     ? 'bg-blue-100 text-blue-700 font-semibold'
@@ -70,7 +71,7 @@ export default function Sidebar() {
             <Link
               key={link.name}
               href={link.href}
-              className={clsx(
+              className={cn(
                 'flex flex-col items-center gap-1 transition-colors',
                 isActive ? 'text-blue-600' : 'text-slate-500'
               )}

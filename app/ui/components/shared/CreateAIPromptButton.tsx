@@ -15,7 +15,6 @@ export default function CreateAIPromptButton() {
   const [refineText, setRefineText] = useState('');
 
   async function generatePlan({ refinementContext = '', forceNew = false }: GeneratePlanOptions) {
-    console.log({ forceNew });
     if (!input) return;
 
     startTransition(async () => {
