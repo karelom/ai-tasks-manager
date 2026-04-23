@@ -13,7 +13,6 @@ interface TaskCardDetailProps {
 }
 
 export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
   const task = await fetchActiveTask(id);
   if (!task) {
     notFound();
