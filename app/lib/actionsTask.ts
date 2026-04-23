@@ -80,6 +80,7 @@ export async function updateTask(
       WHERE id = ${id}
     `;
 
+    revalidatePath('/all-task');
     revalidatePath(`/task/${id}`);
     return { ok: true };
   } catch (err) {
