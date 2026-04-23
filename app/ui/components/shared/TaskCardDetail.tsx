@@ -13,12 +13,13 @@ interface TaskCardDetailProps {
 }
 
 export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
-  const task = await fetchActiveTask(id);
-  if (!task) {
+  const result = await fetchActiveTask(id);
+  if (!result.ok) {
     notFound();
     return;
   }
 
+  const task = result.data!;
   return (
     <TaskCardDetailLayout
       title={<InlineTitle taskId={task.id} data={task.title} />}

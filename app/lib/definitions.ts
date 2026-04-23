@@ -58,3 +58,9 @@ export interface TaskPlanVariantDTO {
 export interface TaskPlanVariant extends Omit<TaskPlanVariantDTO, 'steps'> {
   steps: Pick<Task, 'title' | 'description' | 'status' | 'priority' | 'dueAt'>[];
 }
+
+export type ResponseState<T = unknown> = Promise<{
+  ok: boolean;
+  data?: T;
+  error?: string;
+}>;

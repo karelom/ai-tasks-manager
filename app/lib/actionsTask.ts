@@ -3,12 +3,12 @@
 import postgres from 'postgres';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
-import { Task } from '@/lib/definitions';
+import { ResponseState, Task } from '@/lib/definitions';
 import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
-export async function fetchTasks(isDeleted = false) {
+export async function fetchTasks(isDeleted = false): ResponseState<Task[]> {
   try {
     const data = await sql<Task[]>`
       SELECT * FROM tasks 
@@ -16,15 +16,15 @@ export async function fetchTasks(isDeleted = false) {
       ORDER BY created_at DESC
     `;
 
-    return data;
+    return { ok: true, data };
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch tasks data.');
+    console.error('Failed to fetch all tasks:', err);
+    return { ok: false, error: 'Database Error: Failed to fetch all task data.' };
   }
 }
 
-export async function fetchActiveTask(taskId: string) {
-  if (!taskId) return;
+export async function fetchActiveTask(taskId: string): ResponseState<Task> {
+  if (!taskId) return { ok: false, error: 'No id provided.' };
 
   try {
     const data = await sql<Task[]>`
@@ -32,18 +32,22 @@ export async function fetchActiveTask(taskId: string) {
       WHERE id = ${taskId} AND deleted_at IS NULL
     `;
 
-    return data[0] ?? null;
+    return { ok: true, data: data[0] ?? null };
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch specific task data.');
+    console.error('Failed to fetch task:', err);
+    return { ok: false, error: 'Database Error: Failed to fetch specific task data.' };
   }
 }
 
-export async function createTask(payload: AddTaskType) {
+export async function createTask(payload: AddTaskType): ResponseState {
   const validatedFields = AddTaskSchema.safeParse(payload);
 
   if (!validatedFields.success) {
-    return { ok: false, errors: z.treeifyError(validatedFields.error!).properties };
+    return {
+      ok: false,
+      data: z.treeifyError(validatedFields.error!).properties,
+      error: 'Validation Fail: Task validation failed.',
+    };
   }
 
   const { projectId, parentId, title, description, status, priority, dueAt } = validatedFields.data;
@@ -54,22 +58,14 @@ export async function createTask(payload: AddTaskType) {
     `;
   } catch (err) {
     console.error('Failed to create task:', err);
-    return { ok: false, message: 'Database Error: Failed to Create Task.' };
+    return { ok: false, error: 'Database Error: Failed to Create Task.' };
   }
 
   revalidatePath('/all-task');
   return { ok: true };
 }
 
-export interface ResponseState {
-  ok: boolean;
-  error?: string;
-}
-
-export async function updateTask(
-  id: string,
-  updates: Partial<AddTaskType>
-): Promise<ResponseState> {
+export async function updateTask(id: string, updates: Partial<AddTaskType>): ResponseState {
   const keys = Object.keys(updates) as (keyof AddTaskType)[];
   if (!keys.length) return { ok: true };
 
@@ -89,7 +85,7 @@ export async function updateTask(
   }
 }
 
-export async function deleteTask(id: string): Promise<ResponseState> {
+export async function deleteTask(id: string): ResponseState {
   try {
     await sql`
       UPDATE tasks 
@@ -110,7 +106,7 @@ export async function deleteTask(id: string): Promise<ResponseState> {
   }
 }
 
-export async function restoreTask(id: string): Promise<ResponseState> {
+export async function restoreTask(id: string): ResponseState {
   try {
     await sql`UPDATE tasks SET deleted_at = NULL WHERE id = ${id}`;
 
