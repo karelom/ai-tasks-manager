@@ -12,7 +12,7 @@ export async function openAIbreakdown(input: string) {
   const res = await client.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [{ role: 'system', content: prompt }],
-    temperature: 0.2,
+    temperature: 0.3,
   });
 
   return res.choices[0].message.content;
