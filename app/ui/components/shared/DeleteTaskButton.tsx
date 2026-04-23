@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { deleteTask, restoreTask } from '@/lib/actions';
+import { deleteTask, restoreTask } from '@/lib/actionsTask';
 import { cn } from '@/lib/utils';
 
 export function DeleteTaskButton({ taskId }: { taskId: string }) {

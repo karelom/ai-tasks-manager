@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { updateTask } from '@/lib/actions';
+import { updateTask } from '@/lib/actionsTask';
 import clsx from 'clsx';
 import { AddTaskSchema } from '@/lib/schemas';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';

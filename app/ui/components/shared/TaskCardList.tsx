@@ -1,5 +1,5 @@
 import TaskCard from '@/ui/components/shared/TaskCard';
-import { fetchTasks } from '@/lib/actions';
+import { fetchTasks } from '@/lib/actionsTask';
 
 export default async function TaskCardList() {
   const tasks = await fetchTasks();

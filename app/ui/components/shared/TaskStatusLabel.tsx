@@ -2,7 +2,7 @@
 
 import { TaskStatus } from '@/lib/definitions';
 import { InlineSelect, InlineSelectOption } from '@/ui/components/core/InlineSelect';
-import { updateTask } from '@/lib/actions';
+import { updateTask } from '@/lib/actionsTask';
 import { cn } from '@/lib/utils';
 
 interface TaskStatusLabelProps {

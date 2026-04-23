@@ -12,7 +12,7 @@ import {
   CommandList,
   CommandShortcut,
 } from '@/components/ui/command';
-import { ResponseState } from '@/lib/actions';
+import { ResponseState } from '@/lib/actionsTask';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';

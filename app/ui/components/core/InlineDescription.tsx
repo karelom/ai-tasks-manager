@@ -3,7 +3,7 @@
 import { useEditor, EditorContent, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useState, useEffect } from 'react';
-import { updateTask } from '@/lib/actions';
+import { updateTask } from '@/lib/actionsTask';
 import clsx from 'clsx';
 import { BubbleMenu } from '@tiptap/react/menus';
 import {

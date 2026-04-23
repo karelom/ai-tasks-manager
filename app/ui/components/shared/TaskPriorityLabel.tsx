@@ -1,6 +1,6 @@
 'use client';
 
-import { updateTask } from '@/lib/actions';
+import { updateTask } from '@/lib/actionsTask';
 import { TaskPriority } from '@/lib/definitions';
 import { cn } from '@/lib/utils';
 import { InlineSelect, InlineSelectOption } from '@/ui/components/core/InlineSelect';

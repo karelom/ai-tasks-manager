@@ -4,7 +4,7 @@ import { Control, ControllerRenderProps, FieldValues, Path, useForm } from 'reac
 import { InlineDatePicker } from '@/ui/components/core/InlineDatePicker';
 import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updateTask } from '@/lib/actions';
+import { updateTask } from '@/lib/actionsTask';
 import { ReactNode } from 'react';
 
 interface BaseProps {

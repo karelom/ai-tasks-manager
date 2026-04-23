@@ -1,4 +1,4 @@
-import { fetchActiveTask } from '@/lib/actions';
+import { fetchActiveTask } from '@/lib/actionsTask';
 import { notFound } from 'next/navigation';
 import { InlineTitle } from '@/ui/components/core/InlineTitle';
 import { InlineDescription } from '@/ui/components/core/InlineDescription';
