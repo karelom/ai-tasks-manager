@@ -33,12 +33,6 @@ export function InlineDescription({ taskId, data }: { taskId: string; data: stri
       },
       handleKeyDown: (view, e) => {
         switch (e.key) {
-          case 'Enter':
-            if (!e.shiftKey) {
-              view.dom.blur();
-              return true;
-            }
-            return false;
           case 'Escape':
             editor?.commands.setContent(data);
             view.dom.blur();
