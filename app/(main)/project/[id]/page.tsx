@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import ProjectCardDetail from '@/ui/components/shared/ProjectCardDetail';
 import { Suspense } from 'react';
-import TaskCardDetailSkeleton from '@/ui/components/skeletons/TaskCardDetailSkeleton';
 import { ChevronLeft } from 'lucide-react';
+import ProjectCardDetailSkeleton from '@/ui/components/skeletons/ProjectCardDetailSkeleton';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         </Link>
       </div>
 
-      <Suspense fallback={<TaskCardDetailSkeleton />}>
+      <Suspense fallback={<ProjectCardDetailSkeleton />}>
         <ProjectCardDetail id={id} />
       </Suspense>
     </div>
