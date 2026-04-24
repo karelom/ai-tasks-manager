@@ -12,7 +12,7 @@ import {
   CommandList,
   CommandShortcut,
 } from '@/components/ui/command';
-import { ResponseState } from '@/lib/actionsTask';
+import { ResponseState } from '@/lib/definitions';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
@@ -28,7 +28,7 @@ interface InlineSelectProps<T> {
   shortcut?: string;
   placeholder?: string;
   renderTrigger: (selectedOption: T) => ReactNode;
-  onSave: (value: T) => Promise<ResponseState>;
+  onSave: (value: T) => ResponseState;
 }
 
 export function InlineSelect<T extends string | number>({

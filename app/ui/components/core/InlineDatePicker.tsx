@@ -10,16 +10,13 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
 import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 import { ReactNode, useEffect, useState } from 'react';
-import { ResponseState } from '@/lib/actionsTask';
+import { ResponseState } from '@/lib/definitions';
 
 interface InlineDatePickerProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   trigger?: (name: Path<T>) => Promise<boolean>;
-  customOnSelect?: (
-    newVal: Date | null,
-    field: ControllerRenderProps<T, Path<T>>
-  ) => Promise<ResponseState>;
+  customOnSelect?: (newVal: Date | null, field: ControllerRenderProps<T, Path<T>>) => ResponseState;
   renderLabel?: ReactNode;
   shortcut?: string;
 }
