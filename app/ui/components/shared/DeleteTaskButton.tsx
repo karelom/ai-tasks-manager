@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2, Loader2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { deleteTask, restoreTask } from '@/lib/actionsTask';
 import { cn } from '@/lib/utils';
+import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 
 export function DeleteTaskButton({ taskId }: { taskId: string }) {
   const router = useRouter();
@@ -73,7 +74,7 @@ export function DeleteTaskButton({ taskId }: { taskId: string }) {
           disabled={isPending}
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <LoadingIcon />
           ) : (
             <Trash2 className="h-4 w-4 text-slate-400 group-hover:text-red-500 transition-colors" />
           )}

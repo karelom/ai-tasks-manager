@@ -71,18 +71,18 @@ export async function createTask(payload: AddTaskType): ResponseState {
     };
   }
 
-  const { projectId, parentId, title, description, status, priority, dueAt } = validatedFields.data;
+  const adds = validatedFields.data;
   try {
-    await sql`
-      INSERT INTO tasks (project_id, parent_id, title, description, status, priority, due_at)
-      VALUES (${projectId}, ${parentId}, ${title}, ${description}, ${status}, ${priority}, ${dueAt})
-    `;
+    await sql`INSERT INTO tasks ${sql(adds)}`;
   } catch (err) {
     console.error('Failed to create task:', err);
     return { ok: false, error: 'Database Error: Failed to Create Task.' };
   }
 
   revalidatePath('/all-task');
+  if (adds.projectId) {
+    revalidatePath(`/project/${adds.projectId}`);
+  }
   return { ok: true };
 }
 

@@ -1,10 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 import CreateTaskForm from '@/ui/components/shared/CreateTaskForm';
 import { Suspense, useEffect } from 'react';
 import clsx from 'clsx';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
+import CreateTaskFormHint from '@/ui/components/shared/CreateTaskFormHint';
 
 export default function Page() {
   return (
@@ -40,18 +42,20 @@ function ModalContent() {
           'w-9/10 max-w-3xl'
         )}
       >
-        {/* Header with Close Button */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
-          <h2 className="text-xl font-semibold text-slate-800">Create New Task</h2>
-          <button
-            onClick={() => router.back()}
-            className="p-1 hover:bg-slate-100 rounded-full transition-colors"
-          >
-            <XMarkIcon className="w-6 h-6 text-slate-500 cursor-pointer" />
-          </button>
+        <div className="p-4 border-b border-slate-100">
+          <div className="flex items-center justify-between ">
+            <h2 className="text-xl font-semibold text-slate-800">Create New Task</h2>
+            <Button
+              onClick={() => router.back()}
+              className="px-2 bg-transparent hover:bg-slate-100 rounded-full cursor-pointer"
+            >
+              <X className="w-6 h-6 text-slate-500" />
+            </Button>
+          </div>
+
+          <CreateTaskFormHint projectId={projectId} />
         </div>
 
-        {/* The Form (Reused from your full-page route) */}
         <div className="p-6">
           <CreateTaskForm projectId={projectId} parentId={parentId} />
         </div>
