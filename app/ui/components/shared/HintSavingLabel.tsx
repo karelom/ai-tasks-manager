@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 
 /**
  * An absolute Label hint for save progress.
@@ -22,7 +23,7 @@ export default function HintSavingLabel({
           className
         )}
       >
-        Saving...
+        <LoadingIcon />
       </span>
     )
   );

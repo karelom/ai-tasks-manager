@@ -8,9 +8,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Field, FieldLabel } from '@/components/ui/field';
 import HintInvalidLabel from '@/ui/components/shared/HintInvalidLabel';
-import HintSavingLabel from '@/ui/components/shared/HintSavingLabel';
 import { ReactNode, useEffect, useState } from 'react';
 import { ResponseState } from '@/lib/definitions';
+import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 
 interface InlineDatePickerProps<T extends FieldValues> {
   name: Path<T>;
@@ -112,7 +112,9 @@ export function InlineDatePicker<T extends FieldValues>({
                   aria-invalid={fieldState.invalid}
                 >
                   {field.value ? formatLocaleDate(field.value) : <span>Select a date</span>}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  <div className="ml-auto h-4 w-4 opacity-50">
+                    {isUpdating ? <LoadingIcon /> : <CalendarIcon />}
+                  </div>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -150,7 +152,6 @@ export function InlineDatePicker<T extends FieldValues>({
             </Popover>
 
             <HintInvalidLabel data={errorMessage} />
-            <HintSavingLabel enable={isUpdating} className="right-0 top-[unset] -bottom-6" />
           </Field>
         );
       }}

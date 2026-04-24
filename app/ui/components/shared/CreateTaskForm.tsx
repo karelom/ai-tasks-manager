@@ -9,6 +9,8 @@ import { useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
+import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
+import { useTransition } from 'react';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -17,6 +19,7 @@ export interface CreateTaskProps {
 
 export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps) {
   const router = useRouter();
+  const [isLoading, startTransition] = useTransition();
 
   const {
     register,
@@ -33,14 +36,17 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
     },
   });
 
-  const onSubmit = async (data: AddTaskType) => {
-    const result = await createTask(data);
-    if (result?.ok) {
-      reset();
-      // TODO: close modal ?
-      router.back();
-    }
+  const onSubmit = (data: AddTaskType) => {
+    startTransition(async () => {
+      const result = await createTask(data);
+      if (result?.ok) {
+        reset();
+        router.back();
+      }
+    });
   };
+
+  const canSubmit = !isSubmitting && !isLoading;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -155,10 +161,16 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
 
       <button
         type="submit"
-        disabled={isSubmitting}
-        className="w-full sm:w-auto sm:flex sm:justify-self-end px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 hover:cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+        disabled={!canSubmit}
+        className="w-full sm:w-auto sm:flex sm:justify-self-end px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 hover:cursor-pointer disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
       >
-        {isSubmitting ? 'Adding...' : 'Add Task'}
+        {canSubmit ? (
+          'Add Task'
+        ) : (
+          <span className="flex items-center gap-2">
+            <LoadingIcon /> Adding...
+          </span>
+        )}
       </button>
     </form>
   );
