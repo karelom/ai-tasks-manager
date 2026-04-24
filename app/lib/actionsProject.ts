@@ -20,13 +20,14 @@ export async function fetchProjects(isDeleted = false): ResponseState<Project[]>
   }
 }
 
-export async function fetchActiveProject(id: string): ResponseState<Project> {
-  if (!id) return { ok: false, error: 'No id provided.' };
+export async function fetchActiveProject(projectId: string): ResponseState<Project> {
+  if (!projectId) return { ok: false, error: 'No project id provided.' };
 
   try {
     const data = await sql<Project[]>`
       SELECT * FROM projects
-      WHERE id = ${id} AND deleted_at IS NULL
+      WHERE id = ${projectId} AND deleted_at IS NULL
+      LIMIT 1
     `;
 
     return { ok: true, data: data[0] ?? null };

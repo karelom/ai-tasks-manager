@@ -23,13 +23,34 @@ export async function fetchTasks(isDeleted = false): ResponseState<Task[]> {
   }
 }
 
+export async function fetchProjectTasks(projectId: string): ResponseState<Task[]> {
+  if (!projectId) return { ok: false, error: 'No project id provided.' };
+
+  try {
+    const data = await sql<Task[]>`
+      SELECT * FROM tasks
+      WHERE project_id = ${projectId}
+      ORDER BY created_at ASC
+    `;
+
+    return { ok: true, data };
+  } catch (err) {
+    console.error('Failed to fetch project tasks:', err);
+    return {
+      ok: false,
+      error: 'Database Error: Failed to fetch tasks data from specific project.',
+    };
+  }
+}
+
 export async function fetchActiveTask(taskId: string): ResponseState<Task> {
-  if (!taskId) return { ok: false, error: 'No id provided.' };
+  if (!taskId) return { ok: false, error: 'No task id provided.' };
 
   try {
     const data = await sql<Task[]>`
       SELECT * FROM tasks
       WHERE id = ${taskId} AND deleted_at IS NULL
+      LIMIT 1
     `;
 
     return { ok: true, data: data[0] ?? null };
@@ -65,7 +86,7 @@ export async function createTask(payload: AddTaskType): ResponseState {
   return { ok: true };
 }
 
-export async function updateTask(id: string, updates: Partial<AddTaskType>): ResponseState {
+export async function updateTask(taskId: string, updates: Partial<AddTaskType>): ResponseState {
   const keys = Object.keys(updates) as (keyof AddTaskType)[];
   if (!keys.length) return { ok: true };
 
@@ -73,11 +94,11 @@ export async function updateTask(id: string, updates: Partial<AddTaskType>): Res
     await sql`
       UPDATE tasks 
       SET ${sql(updates)} 
-      WHERE id = ${id}
+      WHERE id = ${taskId}
     `;
 
     revalidatePath('/all-task');
-    revalidatePath(`/task/${id}`);
+    revalidatePath(`/task/${taskId}`);
     return { ok: true };
   } catch (err) {
     console.error('Failed to update task:', err);
@@ -85,16 +106,16 @@ export async function updateTask(id: string, updates: Partial<AddTaskType>): Res
   }
 }
 
-export async function deleteTask(id: string): ResponseState {
+export async function deleteTask(taskId: string): ResponseState {
   try {
     await sql`
       UPDATE tasks 
       SET deleted_at = NOW() 
-      WHERE id = ${id}
+      WHERE id = ${taskId}
     `;
 
     revalidatePath('/all-task');
-    revalidatePath(`/task/${id}`);
+    revalidatePath(`/task/${taskId}`);
 
     return { ok: true };
   } catch (err) {
@@ -106,12 +127,12 @@ export async function deleteTask(id: string): ResponseState {
   }
 }
 
-export async function restoreTask(id: string): ResponseState {
+export async function restoreTask(taskId: string): ResponseState {
   try {
-    await sql`UPDATE tasks SET deleted_at = NULL WHERE id = ${id}`;
+    await sql`UPDATE tasks SET deleted_at = NULL WHERE id = ${taskId}`;
 
     revalidatePath('/all-task');
-    revalidatePath(`/task/${id}`);
+    revalidatePath(`/task/${taskId}`);
 
     return { ok: true };
   } catch (err) {
