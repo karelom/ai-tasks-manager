@@ -14,7 +14,7 @@ interface TaskCardDetailProps {
 
 export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
   const result = await fetchActiveTask(id);
-  if (!result.ok) {
+  if (!result.ok || !result.data) {
     notFound();
     return;
   }

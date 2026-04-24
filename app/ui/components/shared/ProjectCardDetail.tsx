@@ -5,6 +5,7 @@ import ProjectHeader from '@/ui/components/shared/project/ProjectHeader';
 import ProgressBar from '@/ui/components/shared/project/ProgressBar';
 import { fetchProjectTasks } from '@/lib/actionsTask';
 import TaskCardList from '@/ui/components/shared/TaskCardList';
+import CreateTaskButton from '@/ui/components/shared/CreateTaskButton';
 
 interface ProjectCardDetailProps {
   id: string;
@@ -15,7 +16,7 @@ export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) 
     fetchActiveProject(id),
     fetchProjectTasks(id),
   ]);
-  if (!projectResult.ok || !tasksResult.ok) {
+  if (!projectResult.ok || !projectResult.data || !tasksResult.ok) {
     notFound();
     return;
   }
@@ -23,11 +24,15 @@ export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) 
   const project = projectResult.data!;
   const tasks = tasksResult.data!;
   return (
-    <ProjectCardDetailLayout
-      header={<ProjectHeader name={project.name} />}
-      progressBar={<ProgressBar tasks={tasks} />}
-      taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} />}
-    />
+    <>
+      <ProjectCardDetailLayout
+        header={<ProjectHeader name={project.name} />}
+        progressBar={<ProgressBar tasks={tasks} />}
+        taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} />}
+      />
+
+      <CreateTaskButton projectId={id} />
+    </>
   );
 }
 
