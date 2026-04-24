@@ -26,7 +26,7 @@ export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) 
     <ProjectCardDetailLayout
       header={<ProjectHeader name={project.name} />}
       progressBar={<ProgressBar tasks={tasks} />}
-      taskCardList={<TaskCardList payload={tasks} />}
+      taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} />}
     />
   );
 }
@@ -43,7 +43,6 @@ export function ProjectCardDetailLayout({
 }: ProjectCardDetailLayoutProps) {
   return (
     <div className="max-w-5xl mx-auto grid md:grid-cols-3 grid-cols-1 gap-8">
-      {/* Left Column: Content */}
       <div className="md:col-span-2 space-y-6">
         {header}
 
@@ -52,7 +51,6 @@ export function ProjectCardDetailLayout({
         {taskCardList}
       </div>
 
-      {/* Right Column: Metadata */}
       <div className="flex flex-col gap-5">
         {/* <div className="grid md:grid-cols-1 grid-cols-2 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
           <div className="flex flex-col gap-2">

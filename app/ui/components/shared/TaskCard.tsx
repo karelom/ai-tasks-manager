@@ -5,12 +5,15 @@ import TaskPriorityLabel from '@/ui/components/shared/TaskPriorityLabel';
 
 interface TaskCardProps {
   data: Task;
+  backRoute?: string;
 }
-export default function TaskCard({ data }: TaskCardProps) {
+export default function TaskCard({ data, backRoute }: TaskCardProps) {
+  const params = backRoute ? `?back=${backRoute}` : '';
+  const href = `/task/${data.id}${params}`;
   return (
     <Link
       key={data.id}
-      href={`/task/${data.id}`}
+      href={href}
       className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition flex justify-between items-center gap-8 group"
     >
       <div>
