@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { fetchActiveProject } from '@/lib/actionsProject';
 import ProjectHeader from '@/ui/components/shared/project/ProjectHeader';
 import ProgressBar from '@/ui/components/shared/project/ProgressBar';
-import { fetchProjectTasks } from '@/lib/actionsTask';
+import { fetchActiveProjectTasks } from '@/lib/actionsTask';
 import TaskCardList from '@/ui/components/shared/TaskCardList';
 import CreateTaskButton from '@/ui/components/shared/CreateTaskButton';
 
@@ -14,7 +14,7 @@ interface ProjectCardDetailProps {
 export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) {
   const [projectResult, tasksResult] = await Promise.all([
     fetchActiveProject(id),
-    fetchProjectTasks(id),
+    fetchActiveProjectTasks(id),
   ]);
   if (!projectResult.ok || !projectResult.data || !tasksResult.ok) {
     notFound();

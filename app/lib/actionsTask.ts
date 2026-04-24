@@ -23,19 +23,19 @@ export async function fetchTasks(isDeleted = false): ResponseState<Task[]> {
   }
 }
 
-export async function fetchProjectTasks(projectId: string): ResponseState<Task[]> {
+export async function fetchActiveProjectTasks(projectId: string): ResponseState<Task[]> {
   if (!projectId) return { ok: false, error: 'No project id provided.' };
 
   try {
     const data = await sql<Task[]>`
       SELECT * FROM tasks
-      WHERE project_id = ${projectId}
+      WHERE project_id = ${projectId} AND deleted_at IS NULL
       ORDER BY created_at ASC
     `;
 
     return { ok: true, data };
   } catch (err) {
-    console.error('Failed to fetch project tasks:', err);
+    console.error('Failed to fetch specific project tasks:', err);
     return {
       ok: false,
       error: 'Database Error: Failed to fetch tasks data from specific project.',
