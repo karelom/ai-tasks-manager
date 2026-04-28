@@ -26,7 +26,7 @@ export default function CreateAIPromptButton() {
   }
 
   return (
-    <div className="p-6 max-w-xl mx-auto space-y-4">
+    <div className="md:p-6 max-w-5xl mx-auto space-y-4">
       <AIPromptInput
         input={input}
         setInput={setInput}

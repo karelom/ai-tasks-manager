@@ -26,16 +26,23 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
         </div>
       )}
 
-      <div className="space-y-2">
-        {tasks.map((task: AddTaskType, idx: number) => (
-          <EditableTaskItem
-            key={idx}
-            idx={idx}
-            task={task}
-            onChange={(key: string, value: unknown) => update(idx, key, value)}
-          />
-        ))}
-      </div>
+      {tasks.length > 0 && (
+        <>
+          <i className="block m-2 text-xs text-gray-500">
+            *note: you can <b>EDIT</b> before saving.
+          </i>
+          <div className="space-y-2">
+            {tasks.map((task: AddTaskType, idx: number) => (
+              <EditableTaskItem
+                key={idx}
+                idx={idx}
+                task={task}
+                onChange={(key: string, value: unknown) => update(idx, key, value)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

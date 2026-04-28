@@ -24,16 +24,16 @@ export default function PlanActions({
   }
 
   return (
-    <div className="flex justify-between">
-      <div className="space-y-2">
-        <input
-          value={refineText}
-          onChange={(e) => setRefineText(e.target.value)}
-          placeholder="Refine... e.g. focus on speaking"
-          className="w-full border p-2 rounded"
-        />
+    tasks.length > 0 && (
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between items-center gap-4">
+          <input
+            value={refineText}
+            onChange={(e) => setRefineText(e.target.value)}
+            placeholder="Refine... e.g. focus on speaking"
+            className="w-full border p-2 rounded"
+          />
 
-        <div className="flex gap-2">
           <Button
             onClick={() => onRefine({ refinementContext: refineText })}
             disabled={isLoading}
@@ -41,7 +41,10 @@ export default function PlanActions({
           >
             Refine
           </Button>
+        </div>
 
+        <div className="flex items-center gap-3">
+          <p>Don&apos;t like the responses? Try again.</p>
           <Button
             onClick={onRegenerate}
             disabled={isLoading}
@@ -50,15 +53,15 @@ export default function PlanActions({
             Regenerate
           </Button>
         </div>
-      </div>
 
-      <Button
-        onClick={() => onCreateProject(tasks)}
-        disabled={isLoading}
-        className=" px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer"
-      >
-        Create Project
-      </Button>
-    </div>
+        <Button
+          onClick={() => onCreateProject(tasks)}
+          disabled={isLoading}
+          className=" px-4 py-3 bg-blue-600 text-white rounded-lg cursor-pointer"
+        >
+          Create Project
+        </Button>
+      </div>
+    )
   );
 }
