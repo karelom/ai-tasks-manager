@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 
 type Props = {
   input: string;
   setInput: (v: string) => void;
-  onGenerate: () => void;
   isLoading: boolean;
+  onGenerate: () => void;
 };
 
 export default function AIPromptInput({ input, setInput, onGenerate, isLoading }: Props) {
@@ -26,7 +26,7 @@ export default function AIPromptInput({ input, setInput, onGenerate, isLoading }
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <LoadingIcon />
             Generating...
           </>
         ) : (

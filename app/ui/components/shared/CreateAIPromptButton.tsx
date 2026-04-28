@@ -2,17 +2,16 @@
 
 import breakDownTask, { type BreakDownTaskOptions } from '@/api/ai/breakdown';
 import { useState, useTransition } from 'react';
-import AIPromptInput from '@/ui/components/shared/AIPromptInput';
-import AIPlanViewer from '@/ui/components/shared/AIPlanViewer';
+import AIPromptInput from '@/ui/components/shared/aiPrompt/AIPromptInput';
 import { AddTaskType } from '@/lib/schemas';
+import AIPlanPreview from '@/ui/components/shared/aiPrompt/AIPlanPreview';
 
-type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
+export type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
 
 export default function CreateAIPromptButton() {
   const [input, setInput] = useState('');
   const [isLoading, startTransition] = useTransition();
-  const [steps, setSteps] = useState<AddTaskType[]>([]);
-  const [refineText, setRefineText] = useState('');
+  const [tasks, setTasks] = useState<AddTaskType[]>([]);
 
   async function generatePlan({ refinementContext = '', forceNew = false }: GeneratePlanOptions) {
     if (!input) return;
@@ -20,7 +19,7 @@ export default function CreateAIPromptButton() {
     startTransition(async () => {
       const result = await breakDownTask({ input, refinementContext, forceNew });
       if (result.ok) {
-        setSteps(result.data);
+        setTasks(result.data);
       }
       return;
     });
@@ -35,13 +34,12 @@ export default function CreateAIPromptButton() {
         isLoading={isLoading}
       />
 
-      <AIPlanViewer
-        steps={steps}
-        refineText={refineText}
-        setRefineText={setRefineText}
-        onRefine={() => generatePlan({ refinementContext: refineText })}
-        onRegenerate={() => generatePlan({ forceNew: true })}
+      <AIPlanPreview
+        tasks={tasks}
+        setTasks={setTasks}
         isLoading={isLoading}
+        onRefine={generatePlan}
+        onRegenerate={() => generatePlan({ forceNew: true })}
       />
     </div>
   );
