@@ -99,6 +99,8 @@ export async function updateTask(taskId: string, updates: Partial<AddTaskType>):
 
     revalidatePath('/all-task');
     revalidatePath(`/task/${taskId}`);
+    // TODO: revalidatePath /project/[id]
+
     return { ok: true };
   } catch (err) {
     console.error('Failed to update task:', err);
@@ -116,6 +118,7 @@ export async function deleteTask(taskId: string): ResponseState {
 
     revalidatePath('/all-task');
     revalidatePath(`/task/${taskId}`);
+    // TODO: revalidatePath /project/[id]
 
     return { ok: true };
   } catch (err) {
@@ -133,6 +136,7 @@ export async function restoreTask(taskId: string): ResponseState {
 
     revalidatePath('/all-task');
     revalidatePath(`/task/${taskId}`);
+    // TODO: revalidatePath /project/[id]
 
     return { ok: true };
   } catch (err) {
