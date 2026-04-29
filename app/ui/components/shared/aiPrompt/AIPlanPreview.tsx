@@ -12,6 +12,7 @@ export default function AIPlanPreview({
   isLoading,
   onRefine,
   onRegenerate,
+  onCreateProject,
 }: AIPlanPreviewProps) {
   return (
     <div className="border rounded p-4 space-y-4">
@@ -24,6 +25,7 @@ export default function AIPlanPreview({
         isLoading={isLoading}
         onRefine={onRefine}
         onRegenerate={onRegenerate}
+        onCreateProject={onCreateProject}
       />
     </div>
   );

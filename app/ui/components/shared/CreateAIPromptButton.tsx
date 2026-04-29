@@ -3,8 +3,10 @@
 import breakDownTask, { type BreakDownTaskOptions } from '@/api/ai/breakdown';
 import { useState, useTransition } from 'react';
 import AIPromptInput from '@/ui/components/shared/aiPrompt/AIPromptInput';
-import { AddTaskType } from '@/lib/schemas';
+import { AddTaskType, defaultAddProject, defaultAddTask } from '@/lib/schemas';
 import AIPlanPreview from '@/ui/components/shared/aiPrompt/AIPlanPreview';
+import { createProjectWithTasks } from '@/lib/openAI/actionsAI';
+import { toast } from 'sonner';
 
 export type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
 
@@ -21,7 +23,19 @@ export default function CreateAIPromptButton() {
       if (result.ok) {
         setTasks(result.data);
       }
-      return;
+    });
+  }
+
+  async function createProject() {
+    startTransition(async () => {
+      const projectPayload = { ...defaultAddProject, name: input };
+      const tasksPayload = tasks.map((task) => ({ ...defaultAddTask, ...task }));
+      const result = await createProjectWithTasks(projectPayload, tasksPayload);
+      if (result.ok) {
+        toast.success('Successfully create project and tasks.');
+      } else {
+        toast.error('Failed to create project or corresponding tasks.');
+      }
     });
   }
 
@@ -40,6 +54,7 @@ export default function CreateAIPromptButton() {
         isLoading={isLoading}
         onRefine={generatePlan}
         onRegenerate={() => generatePlan({ forceNew: true })}
+        onCreateProject={createProject}
       />
     </div>
   );

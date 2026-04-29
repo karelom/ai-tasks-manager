@@ -8,6 +8,7 @@ export interface PlanActionsProps {
   isLoading: boolean;
   onRefine: (options: GeneratePlanOptions) => Promise<void>;
   onRegenerate: () => void;
+  onCreateProject: () => void;
 }
 
 export default function PlanActions({
@@ -15,13 +16,9 @@ export default function PlanActions({
   isLoading,
   onRefine,
   onRegenerate,
+  onCreateProject,
 }: PlanActionsProps) {
   const [refineText, setRefineText] = useState('');
-
-  function onCreateProject(tasks: AddTaskType[]) {
-    // TODO: save project api
-    console.log('onCreateProject', tasks);
-  }
 
   return (
     tasks.length > 0 && (
@@ -55,7 +52,7 @@ export default function PlanActions({
         </div>
 
         <Button
-          onClick={() => onCreateProject(tasks)}
+          onClick={onCreateProject}
           disabled={isLoading}
           className=" px-4 py-3 bg-blue-600 text-white rounded-lg cursor-pointer"
         >

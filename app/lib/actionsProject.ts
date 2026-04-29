@@ -2,6 +2,9 @@
 
 import postgres from 'postgres';
 import { Project, ResponseState } from '@/lib/definitions';
+import { AddProjectErrors, AddProjectSchema, AddProjectType } from '@/lib/schemas';
+import z from 'zod';
+import { revalidatePath } from 'next/cache';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
@@ -34,5 +37,33 @@ export async function fetchActiveProject(projectId: string): ResponseState<Proje
   } catch (err) {
     console.error('Failed to fetch project:', err);
     return { ok: false, error: 'Database Error: Failed to fetch specific project data.' };
+  }
+}
+
+export async function createProject(
+  payload: AddProjectType,
+  localSql = sql
+): ResponseState<Project | AddProjectErrors> {
+  const validatedFields = AddProjectSchema.safeParse(payload);
+  if (!validatedFields.success) {
+    return {
+      ok: false,
+      data: z.treeifyError(validatedFields.error).properties,
+      error: 'Validation Fail: Project validation failed.',
+    };
+  }
+
+  const adds = validatedFields.data;
+  try {
+    const data = await localSql`
+      INSERT INTO projects ${localSql(adds)}
+      RETURNING *
+    `;
+
+    revalidatePath('/all-project');
+    return { ok: true, data: data[0] };
+  } catch (err) {
+    console.error('Failed to create project:', err);
+    return { ok: false, error: 'Database Error: Failed to Create Project.' };
   }
 }

@@ -4,7 +4,7 @@ import postgres from 'postgres';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { ResponseState, Task } from '@/lib/definitions';
-import { AddTaskSchema, AddTaskType } from '@/lib/schemas';
+import { AddTaskErrors, AddTaskSchema, AddTaskType } from '@/lib/schemas';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
@@ -60,30 +60,36 @@ export async function fetchActiveTask(taskId: string): ResponseState<Task> {
   }
 }
 
-export async function createTask(payload: AddTaskType): ResponseState {
+export async function createTask(
+  payload: AddTaskType,
+  localSql = sql
+): ResponseState<Task | AddTaskErrors> {
   const validatedFields = AddTaskSchema.safeParse(payload);
 
   if (!validatedFields.success) {
     return {
       ok: false,
-      data: z.treeifyError(validatedFields.error!).properties,
+      data: z.treeifyError(validatedFields.error).properties,
       error: 'Validation Fail: Task validation failed.',
     };
   }
 
   const adds = validatedFields.data;
   try {
-    await sql`INSERT INTO tasks ${sql(adds)}`;
+    const data = await localSql`
+      INSERT INTO tasks ${localSql(adds)}
+      RETURNING *
+    `;
+
+    revalidatePath('/all-task');
+    if (adds.projectId) {
+      revalidatePath(`/project/${adds.projectId}`);
+    }
+    return { ok: true, data: data[0] };
   } catch (err) {
     console.error('Failed to create task:', err);
     return { ok: false, error: 'Database Error: Failed to Create Task.' };
   }
-
-  revalidatePath('/all-task');
-  if (adds.projectId) {
-    revalidatePath(`/project/${adds.projectId}`);
-  }
-  return { ok: true };
 }
 
 export async function updateTask(taskId: string, updates: Partial<AddTaskType>): ResponseState {

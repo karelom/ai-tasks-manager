@@ -21,7 +21,7 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[2px] transition-opacity">
           <div className="flex flex-col items-center gap-2">
             <LoadingIcon />
-            <span className="text-sm font-medium text-slate-600">Refining Plan...</span>
+            <span className="text-sm font-medium text-slate-600">Loading Plan...</span>
           </div>
         </div>
       )}
