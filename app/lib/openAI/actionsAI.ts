@@ -78,3 +78,7 @@ export async function createTaskPlanVariant(payload: Partial<TaskPlanVariantDTO>
     };
   }
 }
+
+export async function createProjectWithTasks() {
+  sql.begin(async () => {});
+}

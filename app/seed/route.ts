@@ -5,6 +5,7 @@ const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 export async function GET() {
   try {
+    // TODO: no await, no rollback ?
     await sql.begin(async () => {
       seedProjects().then(() => seedTasks());
       seedTaskPlanGroups().then(() => seedTaskPlanVariants());
@@ -77,7 +78,7 @@ async function seedTaskPlanGroups() {
     CREATE TABLE IF NOT EXISTS task_plan_groups (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       normalized_input TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT NOW()
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
   `;
 }
@@ -91,7 +92,7 @@ async function seedTaskPlanVariants() {
       refinement_context TEXT,
       steps JSONB NOT NULL,
       is_base BOOLEAN DEFAULT FALSE,
-      created_at TIMESTAMP DEFAULT NOW()
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
     );
   `;
 

@@ -3,7 +3,7 @@ import {
   createTaskPlanVariant,
   fetchTaskPlanGroupFirstMatch,
   fetchTaskPlanVariantFirstMatch,
-} from '@/lib/openAI/actions';
+} from '@/lib/openAI/actionsAI';
 import { openAIbreakdown } from '@/lib/openAI/taskAI';
 import { normalizeText } from '@/lib/utils';
 

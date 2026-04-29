@@ -93,7 +93,7 @@ export async function updateTask(taskId: string, updates: Partial<AddTaskType>):
   try {
     await sql`
       UPDATE tasks 
-      SET ${sql(updates)} 
+      SET ${sql(updates)}, updated_at = CURRENT_TIMESTAMP
       WHERE id = ${taskId}
     `;
 
@@ -112,7 +112,7 @@ export async function deleteTask(taskId: string): ResponseState {
   try {
     await sql`
       UPDATE tasks 
-      SET deleted_at = NOW() 
+      SET deleted_at = CURRENT_TIMESTAMP
       WHERE id = ${taskId}
     `;
 
