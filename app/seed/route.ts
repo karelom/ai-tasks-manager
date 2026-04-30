@@ -1,23 +1,30 @@
 import postgres from 'postgres';
 import { projects, tasks, taskPlanVariants } from './placeholder-data';
 
-const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
+const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
 export async function GET() {
   try {
-    // TODO: no await, no rollback ?
-    await sql.begin(async () => {
-      seedProjects().then(() => seedTasks());
-      seedTaskPlanGroups().then(() => seedTaskPlanVariants());
+    await sql.begin(async (trx: unknown) => {
+      const trxSql = trx as postgres.Sql;
+
+      await seedProjects(trxSql);
+      await seedTasks(trxSql);
+      await seedTaskPlanGroups(trxSql);
+      await seedTaskPlanVariants(trxSql);
     });
     return Response.json({ message: 'Database seeded successfully' });
   } catch (err) {
-    return Response.json({ err }, { status: 500 });
+    console.error('Full Seeding Error:', err);
+    const message = err instanceof Error ? err.message : 'Internal Server Error';
+    const cause = err instanceof Error ? err.cause : {};
+    return Response.json({ message, cause }, { status: 500 });
   }
 }
 
-async function seedProjects() {
-  await sql`
+async function seedProjects(trxSql = sql) {
+  try {
+    await trxSql`
     CREATE TABLE IF NOT EXISTS projects (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       name VARCHAR(255) NOT NULL,
@@ -29,21 +36,18 @@ async function seedProjects() {
     );
   `;
 
-  const insertProjects = await Promise.all(
-    projects.map(
-      (p) => sql`
-        INSERT INTO projects (id, name, description, color_code)
-        VALUES (${p.id}, ${p.name}, ${p.description}, ${p.colorCode})
+    await trxSql`
+        INSERT INTO projects ${trxSql(projects)}
         ON CONFLICT (id) DO NOTHING;
-      `
-    )
-  );
-
-  return insertProjects;
+      `;
+  } catch (err) {
+    throw new Error('could not seed projects', { cause: err });
+  }
 }
 
-async function seedTasks() {
-  await sql`
+async function seedTasks(trxSql = sql) {
+  try {
+    await trxSql`
     CREATE TABLE IF NOT EXISTS tasks (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
@@ -60,21 +64,17 @@ async function seedTasks() {
     );
   `;
 
-  const insertTasks = await Promise.all(
-    tasks.map(
-      (t) => sql`
-        INSERT INTO tasks  (project_id, title, description, status, priority, ai_summary, deleted_at)
-        VALUES (${t.projectId}, ${t.title}, ${t.description}, ${t.status}, ${t.priority}, ${t.aiSummary}, ${t.deletedAt})
+    await trxSql`
+        INSERT INTO tasks ${trxSql(tasks)}
         ON CONFLICT (id) DO NOTHING;
-      `
-    )
-  );
-
-  return insertTasks;
+      `;
+  } catch (err) {
+    throw new Error('could not seed tasks', { cause: err });
+  }
 }
 
-async function seedTaskPlanGroups() {
-  await sql`
+async function seedTaskPlanGroups(trxSql = sql) {
+  await trxSql`
     CREATE TABLE IF NOT EXISTS task_plan_groups (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       normalized_input TEXT NOT NULL,
@@ -83,8 +83,8 @@ async function seedTaskPlanGroups() {
   `;
 }
 
-async function seedTaskPlanVariants() {
-  await sql`
+async function seedTaskPlanVariants(trxSql = sql) {
+  await trxSql`
     CREATE TABLE IF NOT EXISTS task_plan_variants (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       group_id UUID REFERENCES task_plan_groups(id),
@@ -96,15 +96,12 @@ async function seedTaskPlanVariants() {
     );
   `;
 
-  const insertVariants = await Promise.all(
-    taskPlanVariants.map(
-      (v) => sql`
-        INSERT INTO task_plan_variants (input, refinement_context, steps, is_base)
-        VALUES (${v.input}, ${v.refinementContext}, ${JSON.stringify(v.steps)}, ${v.isBase})
+  const taskPlanVariantsPayload = {
+    ...taskPlanVariants[0],
+    steps: JSON.stringify(taskPlanVariants[0].steps),
+  };
+  await trxSql`
+        INSERT INTO task_plan_variants ${trxSql(taskPlanVariantsPayload)}
         ON CONFLICT (id) DO NOTHING;
-      `
-    )
-  );
-
-  return insertVariants;
+      `;
 }

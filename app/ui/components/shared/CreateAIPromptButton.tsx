@@ -5,7 +5,7 @@ import { useState, useTransition } from 'react';
 import AIPromptInput from '@/ui/components/shared/aiPrompt/AIPromptInput';
 import { AddTaskType, defaultAddProject, defaultAddTask } from '@/lib/schemas';
 import AIPlanPreview from '@/ui/components/shared/aiPrompt/AIPlanPreview';
-import { createProjectWithTasks } from '@/lib/openAI/actionsAI';
+import { createProjectWithTasks } from '@/lib/actionsProject';
 import { toast } from 'sonner';
 
 export type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
