@@ -3,10 +3,10 @@
 import postgres from 'postgres';
 import { Project, TaskPlanGroup, TaskPlanVariant, TaskPlanVariantDTO } from '@/lib/definitions';
 import { buildWhereConditions } from '@/lib/utils';
-import { createProject } from '@/lib/actionsProject';
+import { createProjects } from '@/lib/actionsProject';
 import { AddProjectType, AddTaskType } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
-import { createTask } from '@/lib/actionsTask';
+import { createTasks } from '@/lib/actionsTask';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
@@ -89,19 +89,21 @@ export async function createProjectWithTasks(
 ) {
   try {
     const result = await sql.begin(async (trx: unknown) => {
-      const localSql = trx as postgres.Sql;
-      const projectResult = await createProject(projectPayload, localSql);
-      const tasksResult = await Promise.all(
-        tasksPayload.map(async (task) => {
-          const taskResult = await createTask(
-            { ...task, projectId: (projectResult.data as Project).id },
-            localSql
-          );
-          if (taskResult.ok) return taskResult.data;
-          throw new Error('could not create task', { cause: taskResult.error });
-        })
-      );
-      return { project: projectResult.data, tasks: tasksResult };
+      const trxSql = trx as postgres.Sql;
+
+      const projectsResult = await createProjects([projectPayload], trxSql);
+      if (!projectsResult.ok)
+        throw new Error('could not create project', { cause: projectsResult.error });
+
+      const draftProject = (projectsResult.data as Project[])[0];
+      tasksPayload = tasksPayload.map((task) => ({
+        ...task,
+        projectId: draftProject.id,
+      }));
+      const tasksResult = await createTasks(tasksPayload, trxSql);
+      if (!tasksResult.ok) throw new Error('could not create tasks', { cause: tasksResult.error });
+
+      return { project: draftProject, tasks: tasksResult.data };
     });
 
     revalidatePath('/all-project');

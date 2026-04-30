@@ -40,28 +40,33 @@ export async function fetchActiveProject(projectId: string): ResponseState<Proje
   }
 }
 
-export async function createProject(
-  payload: AddProjectType,
-  localSql = sql
-): ResponseState<Project | AddProjectErrors> {
-  const validatedFields = AddProjectSchema.safeParse(payload);
-  if (!validatedFields.success) {
-    return {
-      ok: false,
-      data: z.treeifyError(validatedFields.error).properties,
-      error: 'Validation Fail: Project validation failed.',
-    };
+export async function createProjects(
+  payload: AddProjectType[],
+  trxSql = sql
+): ResponseState<Project[] | AddProjectErrors> {
+  const validAddProjects: AddProjectType[] = [];
+
+  for (const data of payload) {
+    const validatedFields = AddProjectSchema.safeParse(data);
+    if (!validatedFields.success) {
+      return {
+        ok: false,
+        data: z.treeifyError(validatedFields.error).properties,
+        error: 'Validation Fail: Project validation failed.',
+      };
+    }
+    validAddProjects.push(validatedFields.data);
   }
 
-  const adds = validatedFields.data;
   try {
-    const data = await localSql`
-      INSERT INTO projects ${localSql(adds)}
+    const data = await trxSql<Project[]>`
+      INSERT INTO projects ${trxSql(validAddProjects)}
+      ON CONFLICT (id) DO NOTHING
       RETURNING *
     `;
 
     revalidatePath('/all-project');
-    return { ok: true, data: data[0] };
+    return { ok: true, data };
   } catch (err) {
     console.error('Failed to create project:', err);
     return { ok: false, error: 'Database Error: Failed to Create Project.' };

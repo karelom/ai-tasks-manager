@@ -1,6 +1,6 @@
 'use client';
 
-import { createTask } from '@/lib/actionsTask';
+import { createTasks } from '@/lib/actionsTask';
 import { TaskPriority, TaskStatus } from '@/lib/definitions';
 import { AddTaskSchema, AddTaskType, defaultAddTask } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,7 +38,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
 
   const onSubmit = (data: AddTaskType) => {
     startTransition(async () => {
-      const result = await createTask(data);
+      const result = await createTasks([data]);
       if (result?.ok) {
         reset();
         router.back();

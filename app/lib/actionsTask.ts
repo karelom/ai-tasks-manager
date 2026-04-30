@@ -60,32 +60,38 @@ export async function fetchActiveTask(taskId: string): ResponseState<Task> {
   }
 }
 
-export async function createTask(
-  payload: AddTaskType,
-  localSql = sql
-): ResponseState<Task | AddTaskErrors> {
-  const validatedFields = AddTaskSchema.safeParse(payload);
+export async function createTasks(
+  payload: AddTaskType[],
+  trxSql = sql
+): ResponseState<Task[] | AddTaskErrors> {
+  const validAddTasks: AddTaskType[] = [];
 
-  if (!validatedFields.success) {
-    return {
-      ok: false,
-      data: z.treeifyError(validatedFields.error).properties,
-      error: 'Validation Fail: Task validation failed.',
-    };
+  for (const data of payload) {
+    const validatedFields = AddTaskSchema.safeParse(data);
+    if (!validatedFields.success) {
+      return {
+        ok: false,
+        data: z.treeifyError(validatedFields.error).properties,
+        error: 'Validation Fail: Task validation failed.',
+      };
+    }
+    validAddTasks.push(validatedFields.data);
   }
 
-  const adds = validatedFields.data;
   try {
-    const data = await localSql`
-      INSERT INTO tasks ${localSql(adds)}
+    const data = await trxSql<Task[]>`
+      INSERT INTO tasks ${trxSql(validAddTasks)}
+      ON CONFLICT (id) DO NOTHING
       RETURNING *
     `;
 
     revalidatePath('/all-task');
-    if (adds.projectId) {
-      revalidatePath(`/project/${adds.projectId}`);
-    }
-    return { ok: true, data: data[0] };
+    validAddTasks.forEach((task) => {
+      if (task.projectId) {
+        revalidatePath(`/project/${task.projectId}`);
+      }
+    });
+    return { ok: true, data };
   } catch (err) {
     console.error('Failed to create task:', err);
     return { ok: false, error: 'Database Error: Failed to Create Task.' };
