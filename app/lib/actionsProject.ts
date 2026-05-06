@@ -5,7 +5,7 @@ import { Project, ResponseState } from '@/lib/definitions';
 import { AddProjectErrors, AddProjectSchema, AddProjectType, AddTaskType } from '@/lib/schemas';
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
-import { createTasks } from '@/lib/actionsTask';
+import { createTasks, deleteProjectTasks, restoreProjectTasks } from '@/lib/actionsTask';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require', transform: postgres.camel });
 
@@ -114,11 +114,16 @@ export async function createProjectWithTasks(
 
 export async function deleteProject(projectId: string): ResponseState {
   try {
-    await sql`
-      UPDATE projects 
-      SET deleted_at = CURRENT_TIMESTAMP
-      WHERE id = ${projectId}
-    `;
+    await sql.begin(async (trx: unknown) => {
+      const trxSql = trx as postgres.Sql;
+
+      await trxSql`
+        UPDATE projects 
+        SET deleted_at = CURRENT_TIMESTAMP
+        WHERE id = ${projectId}
+      `;
+      await deleteProjectTasks(projectId, trxSql);
+    });
 
     revalidatePath('/all-project');
     revalidatePath(`/project/${projectId}`);
@@ -135,7 +140,12 @@ export async function deleteProject(projectId: string): ResponseState {
 
 export async function restoreProject(projectId: string): ResponseState {
   try {
-    await sql`UPDATE projects SET deleted_at = NULL WHERE id = ${projectId}`;
+    await sql.begin(async (trx: unknown) => {
+      const trxSql = trx as postgres.Sql;
+
+      await sql`UPDATE projects SET deleted_at = NULL WHERE id = ${projectId}`;
+      await restoreProjectTasks(projectId, trxSql);
+    });
 
     revalidatePath('/all-project');
     revalidatePath(`/project/${projectId}`);

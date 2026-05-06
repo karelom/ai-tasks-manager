@@ -142,6 +142,26 @@ export async function deleteTask(taskId: string): ResponseState {
   }
 }
 
+export async function deleteProjectTasks(projectId: string, trxSql = sql): ResponseState {
+  try {
+    await trxSql`
+      UPDATE tasks 
+      SET deleted_at = CURRENT_TIMESTAMP
+      WHERE project_id = ${projectId}
+    `;
+
+    revalidatePath('/all-task');
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to soft-delete project tasks:', err);
+    return {
+      ok: false,
+      error: 'Database Error: Failed to Archive Project Tasks.',
+    };
+  }
+}
+
 export async function restoreTask(taskId: string): ResponseState {
   try {
     await sql`UPDATE tasks SET deleted_at = NULL WHERE id = ${taskId}`;
@@ -154,5 +174,18 @@ export async function restoreTask(taskId: string): ResponseState {
   } catch (err) {
     console.error('Failed to restore task:', err);
     return { ok: false, error: 'Database Error: Failed to restore task.' };
+  }
+}
+
+export async function restoreProjectTasks(projectId: string, trxSql = sql): ResponseState {
+  try {
+    await trxSql`UPDATE tasks SET deleted_at = NULL WHERE project_id = ${projectId}`;
+
+    revalidatePath('/all-task');
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to restore project task:', err);
+    return { ok: false, error: 'Database Error: Failed to restore project tasks.' };
   }
 }
