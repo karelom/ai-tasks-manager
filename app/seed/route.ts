@@ -52,6 +52,7 @@ async function seedTasks(trxSql = sql) {
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
       project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
       parent_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
+      order_idx INTEGER,
       title VARCHAR(255) NOT NULL,
       description TEXT,
       status VARCHAR(50) DEFAULT 'backlog',

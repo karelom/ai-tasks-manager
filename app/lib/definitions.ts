@@ -13,6 +13,8 @@ export interface Task {
   projectId: string | null;
   /** for subtask */
   parentId: string | null;
+  /** for project view order */
+  orderIdx: number | null;
   title: string;
   description: string;
   status: TaskStatus;

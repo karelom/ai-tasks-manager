@@ -30,7 +30,7 @@ export async function fetchActiveProjectTasks(projectId: string): ResponseState<
     const data = await sql<Task[]>`
       SELECT * FROM tasks
       WHERE project_id = ${projectId} AND deleted_at IS NULL
-      ORDER BY created_at ASC
+      ORDER BY order_idx ASC
     `;
 
     return { ok: true, data };
@@ -64,8 +64,9 @@ export async function createTasks(
   payload: AddTaskType[],
   trxSql = sql
 ): ResponseState<Task[] | AddTaskErrors> {
-  const validAddTasks: AddTaskType[] = [];
+  const validAddTasks: Partial<Task>[] = [];
 
+  let orderIdx = 0;
   for (const data of payload) {
     const validatedFields = AddTaskSchema.safeParse(data);
     if (!validatedFields.success) {
@@ -75,7 +76,8 @@ export async function createTasks(
         error: 'Validation Fail: Task validation failed.',
       };
     }
-    validAddTasks.push(validatedFields.data);
+    validAddTasks.push({ ...validatedFields.data, orderIdx });
+    orderIdx++;
   }
 
   try {
