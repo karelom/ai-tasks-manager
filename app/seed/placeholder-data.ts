@@ -9,7 +9,7 @@ const projects: Omit<Project, 'createdAt' | 'updatedAt' | 'deletedAt'>[] = [
   },
 ];
 
-const tasks: Omit<Task, 'id' | 'parentId' | 'dueAt' | 'createdAt' | 'updatedAt'>[] = [
+const tasks: Omit<Task, 'id' | 'parentId' | 'orderIdx' | 'dueAt' | 'createdAt' | 'updatedAt'>[] = [
   {
     projectId: projects[0].id,
     title: 'Refactor C++ Engine',
