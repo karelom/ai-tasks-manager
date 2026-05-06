@@ -6,6 +6,7 @@ import ProgressBar from '@/ui/components/shared/project/ProgressBar';
 import { fetchActiveProjectTasks } from '@/lib/actionsTask';
 import TaskCardList from '@/ui/components/shared/TaskCardList';
 import CreateTaskButton from '@/ui/components/shared/CreateTaskButton';
+import { DeleteProjectButton } from '@/ui/components/shared/DeleteProjectButton';
 
 interface ProjectCardDetailProps {
   id: string;
@@ -29,6 +30,7 @@ export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) 
         header={<ProjectHeader name={project.name} />}
         progressBar={<ProgressBar tasks={tasks} />}
         taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} />}
+        deleteBtn={<DeleteProjectButton projectId={project.id} />}
       />
 
       <CreateTaskButton projectId={id} />
@@ -40,11 +42,13 @@ interface ProjectCardDetailLayoutProps {
   header: ReactNode;
   progressBar: ReactNode;
   taskCardList: ReactNode;
+  deleteBtn: ReactNode;
 }
 export function ProjectCardDetailLayout({
   header,
   progressBar,
   taskCardList,
+  deleteBtn,
 }: ProjectCardDetailLayoutProps) {
   return (
     <div className="max-w-5xl mx-auto grid md:grid-cols-3 grid-cols-1 gap-8">
@@ -73,7 +77,7 @@ export function ProjectCardDetailLayout({
 
         <div className="grid grid-cols-1 bg-white p-6 rounded-xl border border-slate-200 h-fit space-y-4">
           <label className="text-xs font-bold text-slate-400 uppercase">Settings</label>
-          {/* {deleteBtn} */}
+          {deleteBtn}
         </div>
       </div>
     </div>

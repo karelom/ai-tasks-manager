@@ -7,6 +7,7 @@ export default function ProjectCardDetailSkeleton() {
       header={<HeaderSkeleton />}
       progressBar={<ProgressBarSkeleton />}
       taskCardList={<TaskCardListSkeleton />}
+      deleteBtn={<DeleteBtn />}
     />
   );
 }
@@ -24,6 +25,14 @@ function ProgressBarSkeleton() {
     <div className="flex flex-col gap-2 animate-pulse">
       <div className="h-2 w-40 bg-slate-100 rounded-md"></div>
       <div className="h-2 w-full bg-slate-500 rounded"></div>
+    </div>
+  );
+}
+
+function DeleteBtn() {
+  return (
+    <div className="animate-pulse">
+      <div className="h-5 w-22 bg-slate-200 rounded-xs"></div>
     </div>
   );
 }

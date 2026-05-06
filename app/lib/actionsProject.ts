@@ -111,3 +111,38 @@ export async function createProjectWithTasks(
     };
   }
 }
+
+export async function deleteProject(projectId: string): ResponseState {
+  try {
+    await sql`
+      UPDATE projects 
+      SET deleted_at = CURRENT_TIMESTAMP
+      WHERE id = ${projectId}
+    `;
+
+    revalidatePath('/all-project');
+    revalidatePath(`/project/${projectId}`);
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to soft-delete project:', err);
+    return {
+      ok: false,
+      error: 'Database Error: Failed to Archive Project.',
+    };
+  }
+}
+
+export async function restoreProject(projectId: string): ResponseState {
+  try {
+    await sql`UPDATE projects SET deleted_at = NULL WHERE id = ${projectId}`;
+
+    revalidatePath('/all-project');
+    revalidatePath(`/project/${projectId}`);
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to restore project:', err);
+    return { ok: false, error: 'Database Error: Failed to restore project.' };
+  }
+}
