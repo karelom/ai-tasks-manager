@@ -50,8 +50,8 @@ async function seedTasks(trxSql = sql) {
     await trxSql`
     CREATE TABLE IF NOT EXISTS tasks (
       id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
-      parent_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
+      project_id UUID REFERENCES projects(id),
+      parent_id UUID REFERENCES tasks(id),
       order_idx INTEGER,
       title VARCHAR(255) NOT NULL,
       description TEXT,
@@ -61,7 +61,7 @@ async function seedTasks(trxSql = sql) {
       due_at TIMESTAMP WITH TIME ZONE,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
+      deleted_at TIMESTAMP WITH TIME ZONE
     );
   `;
 
