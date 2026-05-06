@@ -78,27 +78,28 @@ export async function createTasks(
     validAddTasks.push(validatedFields.data);
   }
 
+  const runner = async (trx: unknown) => {
+    const trxSql = trx as postgres.Sql;
+
+    await setProjectOrderIdx(validAddTasks, trxSql);
+
+    return await trxSql<Task[]>`
+      INSERT INTO tasks ${trxSql(validAddTasks)}
+      ON CONFLICT (id) DO NOTHING
+      RETURNING *
+    `;
+  };
+
   try {
-    const data = await trxSql.begin(async (trx: unknown) => {
-      const trxSql = trx as postgres.Sql;
+    const data =
+      typeof trxSql.begin === 'function' ? await sql.begin(runner) : await runner(trxSql);
 
-      await setProjectOrderIdx(validAddTasks, trxSql);
-
-      const data = await trxSql<Task[]>`
-        INSERT INTO tasks ${trxSql(validAddTasks)}
-        ON CONFLICT (id) DO NOTHING
-        RETURNING *
-      `;
-
-      revalidatePath('/all-task');
-      validAddTasks.forEach((task) => {
-        if (task.projectId) {
-          revalidatePath(`/project/${task.projectId}`);
-        }
-      });
-      return data;
+    revalidatePath('/all-task');
+    validAddTasks.forEach((task) => {
+      if (task.projectId) {
+        revalidatePath(`/project/${task.projectId}`);
+      }
     });
-
     return { ok: true, data };
   } catch (err) {
     console.error('Failed to create task:', err);
