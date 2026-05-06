@@ -66,7 +66,6 @@ export async function createTasks(
 ): ResponseState<Task[] | AddTaskErrors> {
   const validAddTasks: Partial<Task>[] = [];
 
-  let orderIdx = 0;
   for (const data of payload) {
     const validatedFields = AddTaskSchema.safeParse(data);
     if (!validatedFields.success) {
@@ -76,27 +75,68 @@ export async function createTasks(
         error: 'Validation Fail: Task validation failed.',
       };
     }
-    validAddTasks.push({ ...validatedFields.data, orderIdx });
-    orderIdx++;
+    validAddTasks.push(validatedFields.data);
   }
 
   try {
-    const data = await trxSql<Task[]>`
-      INSERT INTO tasks ${trxSql(validAddTasks)}
-      ON CONFLICT (id) DO NOTHING
-      RETURNING *
-    `;
+    const data = await trxSql.begin(async (trx: unknown) => {
+      const trxSql = trx as postgres.Sql;
 
-    revalidatePath('/all-task');
-    validAddTasks.forEach((task) => {
-      if (task.projectId) {
-        revalidatePath(`/project/${task.projectId}`);
-      }
+      await setProjectOrderIdx(validAddTasks, trxSql);
+
+      const data = await trxSql<Task[]>`
+        INSERT INTO tasks ${trxSql(validAddTasks)}
+        ON CONFLICT (id) DO NOTHING
+        RETURNING *
+      `;
+
+      revalidatePath('/all-task');
+      validAddTasks.forEach((task) => {
+        if (task.projectId) {
+          revalidatePath(`/project/${task.projectId}`);
+        }
+      });
+      return data;
     });
+
     return { ok: true, data };
   } catch (err) {
     console.error('Failed to create task:', err);
     return { ok: false, error: 'Database Error: Failed to Create Task.' };
+  }
+
+  async function setProjectOrderIdx(payload: Partial<Task>[], trxSql = sql) {
+    const projectIds = [
+      ...new Set(payload.filter((data) => data.projectId !== null).map((data) => data.projectId!)),
+    ];
+
+    // lock projects to avoid race
+    await trxSql`
+      SELECT id FROM projects
+      WHERE id = ANY(${projectIds})
+      FOR UPDATE
+    `;
+
+    // get max order per project
+    const result = await trxSql<{ projectId: string; max: number }[]>`
+      SELECT project_id, COALESCE(MAX(order_idx), -1) AS max
+      FROM tasks
+      WHERE project_id = ANY(${projectIds})
+      GROUP BY project_id
+    `;
+    const projectOrderIdxMap = new Map<string, number>();
+    result.forEach((data) => {
+      projectOrderIdxMap.set(data.projectId, data.max);
+    });
+
+    // update orderIdx by project
+    payload.forEach((data) => {
+      if (!data.projectId) return;
+
+      const currentIdx = (projectOrderIdxMap.get(data.projectId) ?? -1) + 1;
+      projectOrderIdxMap.set(data.projectId, currentIdx);
+      data.orderIdx = currentIdx;
+    });
   }
 }
 
@@ -179,6 +219,7 @@ export async function restoreTask(taskId: string): ResponseState {
   }
 }
 
+// TODO: will restore all deleted tasks (undo for specific tasks only?)
 export async function restoreProjectTasks(projectId: string, trxSql = sql): ResponseState {
   try {
     await trxSql`UPDATE tasks SET deleted_at = NULL WHERE project_id = ${projectId}`;

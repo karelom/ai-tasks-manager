@@ -48,27 +48,30 @@ async function seedProjects(trxSql = sql) {
 async function seedTasks(trxSql = sql) {
   try {
     await trxSql`
-    CREATE TABLE IF NOT EXISTS tasks (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      project_id UUID REFERENCES projects(id),
-      parent_id UUID REFERENCES tasks(id),
-      order_idx INTEGER,
-      title VARCHAR(255) NOT NULL,
-      description TEXT,
-      status VARCHAR(50) DEFAULT 'backlog',
-      priority VARCHAR(20) DEFAULT 'none',
-      ai_summary TEXT,
-      due_at TIMESTAMP WITH TIME ZONE,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      deleted_at TIMESTAMP WITH TIME ZONE
-    );
-  `;
+      CREATE TABLE IF NOT EXISTS tasks (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        project_id UUID REFERENCES projects(id),
+        parent_id UUID REFERENCES tasks(id),
+        order_idx INTEGER,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        status VARCHAR(50) DEFAULT 'backlog',
+        priority VARCHAR(20) DEFAULT 'none',
+        ai_summary TEXT,
+        due_at TIMESTAMP WITH TIME ZONE,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        deleted_at TIMESTAMP WITH TIME ZONE
+      );
+  
+      CREATE UNIQUE INDEX uniq_project_order
+      ON tasks USING btree (project_id, order_idx);
+    `;
 
     await trxSql`
-        INSERT INTO tasks ${trxSql(tasks)}
-        ON CONFLICT (id) DO NOTHING;
-      `;
+      INSERT INTO tasks ${trxSql(tasks)}
+      ON CONFLICT (id) DO NOTHING;
+    `;
   } catch (err) {
     throw new Error('could not seed tasks', { cause: err });
   }

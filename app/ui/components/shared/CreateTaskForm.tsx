@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -42,6 +43,9 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
       if (result?.ok) {
         reset();
         router.back();
+        toast.success('Create task successfully.');
+      } else {
+        toast.error(result.error);
       }
     });
   };
