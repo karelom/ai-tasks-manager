@@ -42,7 +42,7 @@ export default async function breakDownTask({
   console.log('🔥 AI CALLED');
 
   try {
-    const aiResponse = await openAIbreakdown(input);
+    const aiResponse = await openAIbreakdown(input, refinementContext);
     const result = await createTaskPlanVariant({
       groupId: groupResult.data!.id,
       input,
