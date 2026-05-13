@@ -234,40 +234,40 @@ export async function restoreProjectTasks(projectId: string, trxSql = sql): Resp
   }
 }
 
-export async function swapTaskOrder(task: Task, orderIdx: number): ResponseState {
-  const projectId = task.projectId;
-  const taskId = task.id;
-
+export async function swapTaskOrder(
+  projectId: string,
+  updateMap: Map<string, number>
+): ResponseState {
   try {
     await sql.begin(async (trx: unknown) => {
       const trxSql = trx as postgres.Sql;
 
-      const originData = await trxSql<Array<{ id: string; orderIdx: number }>>`
-        SELECT id, order_idx FROM tasks
+      const updateList: [string, number][] = [];
+      const idList: string[] = [];
+      updateMap.forEach((idx, id) => {
+        updateList.push([id, idx]);
+        idList.push(id);
+      });
+
+      // temporary shift to avoid UNIQUE conflicts
+      await trxSql`
+        UPDATE tasks
+        SET order_idx = order_idx + 1000000
         WHERE project_id = ${projectId}
-        ORDER BY order_idx ASC
-        FOR UPDATE
+          AND id IN ${trxSql(idList)}
       `;
 
-      const swappedTask = originData[orderIdx];
-      if (!swappedTask) return { ok: false, error: 'no swapped task found.' };
-
+      // final update
       await trxSql`
         UPDATE tasks
-        SET order_idx = -1
-        WHERE id = ${swappedTask.id}
-      `;
-
-      await trxSql`
-        UPDATE tasks
-        SET order_idx = ${swappedTask.orderIdx}, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ${taskId}
-      `;
-
-      await trxSql`
-        UPDATE tasks
-        SET order_idx = ${task.orderIdx}, updated_at = CURRENT_TIMESTAMP
-        WHERE id = ${swappedTask.id}
+        SET
+          order_idx = (update_data.order_idx)::int,
+          updated_at = CURRENT_TIMESTAMP
+        FROM (
+          VALUES ${trxSql(updateList)}
+        ) as update_data (id, order_idx)
+        WHERE project_id = ${projectId}
+          AND tasks.id = (update_data.id)::uuid
       `;
     });
 

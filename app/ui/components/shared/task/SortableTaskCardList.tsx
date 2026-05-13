@@ -1,9 +1,10 @@
 'use client';
 
 import { DragDropProvider } from '@dnd-kit/react';
+import { arrayMove } from '@dnd-kit/helpers';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { Task } from '@/lib/definitions';
-import { ReactNode } from 'react';
+import { ReactNode, useRef, useTransition } from 'react';
 import TaskCard from '@/ui/components/shared/TaskCard';
 import { GripVertical } from 'lucide-react';
 import { swapTaskOrder } from '@/lib/actionsTask';
@@ -19,15 +20,40 @@ export default function SortableTaskCardList({
   backRoute,
   sortable = false,
 }: SortableTaskCardListProps) {
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const [, startTransition] = useTransition();
+  const newTaskList = useRef(data);
+
+  function getUpdateMap(original: Task[], current: Task[]): Map<string, number> {
+    const result = new Map<string, number>();
+
+    current.forEach((task, index) => {
+      const originalTask = original[index];
+      if (originalTask.orderIdx !== task.orderIdx) {
+        result.set(task.id, originalTask.orderIdx!);
+      }
+    });
+
+    return result;
+  }
+
   return (
     <div className="grid gap-4">
       <DragDropProvider
         onDragEnd={(event) => {
           if (event.canceled) return;
 
-          const { target } = event.operation;
-          if (isSortable(target)) {
-            swapTaskOrder(target.data, target.index);
+          const { source, target } = event.operation;
+          if (isSortable(source) && isSortable(target)) {
+            newTaskList.current = arrayMove(newTaskList.current, source.initialIndex, target.index);
+
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+            debounceTimer.current = setTimeout(() => {
+              startTransition(() => {
+                const updateMap = getUpdateMap(data, newTaskList.current);
+                swapTaskOrder(target.data.projectId, updateMap);
+              });
+            }, 3000);
           }
         }}
       >
