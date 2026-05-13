@@ -233,3 +233,49 @@ export async function restoreProjectTasks(projectId: string, trxSql = sql): Resp
     return { ok: false, error: 'Database Error: Failed to restore project tasks.' };
   }
 }
+
+export async function swapTaskOrder(task: Task, orderIdx: number): ResponseState {
+  const projectId = task.projectId;
+  const taskId = task.id;
+
+  try {
+    await sql.begin(async (trx: unknown) => {
+      const trxSql = trx as postgres.Sql;
+
+      const originData = await trxSql<Array<{ id: string; orderIdx: number }>>`
+        SELECT id, order_idx FROM tasks
+        WHERE project_id = ${projectId}
+        ORDER BY order_idx ASC
+        FOR UPDATE
+      `;
+
+      const swappedTask = originData[orderIdx];
+      if (!swappedTask) return { ok: false, error: 'no swapped task found.' };
+
+      await trxSql`
+        UPDATE tasks
+        SET order_idx = -1
+        WHERE id = ${swappedTask.id}
+      `;
+
+      await trxSql`
+        UPDATE tasks
+        SET order_idx = ${swappedTask.orderIdx}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${taskId}
+      `;
+
+      await trxSql`
+        UPDATE tasks
+        SET order_idx = ${task.orderIdx}, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ${swappedTask.id}
+      `;
+    });
+
+    revalidatePath(`/project/${projectId}`);
+
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to swap tasks:', err);
+    return { ok: false, error: 'Database Error: Failed to Swap Tasks.' };
+  }
+}

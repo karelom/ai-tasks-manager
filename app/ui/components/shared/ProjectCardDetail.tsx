@@ -29,7 +29,7 @@ export default async function ProjectCardDetail({ id }: ProjectCardDetailProps) 
       <ProjectCardDetailLayout
         header={<ProjectHeader name={project.name} />}
         progressBar={<ProgressBar tasks={tasks} />}
-        taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} />}
+        taskCardList={<TaskCardList payload={tasks} backRoute={`/project/${id}`} sortable={true} />}
         deleteBtn={<DeleteProjectButton projectId={project.id} />}
       />
 

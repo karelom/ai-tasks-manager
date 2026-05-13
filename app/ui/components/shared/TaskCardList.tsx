@@ -1,11 +1,12 @@
-import TaskCard from '@/ui/components/shared/TaskCard';
 import { fetchTasks } from '@/lib/actionsTask';
 import { notFound } from 'next/navigation';
 import { Task } from '@/lib/definitions';
+import SortableTaskCardList from '@/ui/components/shared/task/SortableTaskCardList';
 
 interface TaskCardListProps {
   payload?: Task[];
   backRoute?: string;
+  sortable?: boolean;
 }
 
 /**
@@ -15,7 +16,11 @@ interface TaskCardListProps {
  * @param backRoute determine where the task is coming from
  * @returns
  */
-export default async function TaskCardList({ payload, backRoute }: TaskCardListProps) {
+export default async function TaskCardList({
+  payload,
+  backRoute,
+  sortable = false,
+}: TaskCardListProps) {
   let tasks = payload;
   if (!tasks) {
     const result = await fetchTasks();
@@ -26,11 +31,5 @@ export default async function TaskCardList({ payload, backRoute }: TaskCardListP
     tasks = result.data!;
   }
 
-  return (
-    <div className="grid gap-4">
-      {tasks.map((task) => (
-        <TaskCard key={task.id} data={task} backRoute={backRoute} />
-      ))}
-    </div>
-  );
+  return <SortableTaskCardList data={tasks} backRoute={backRoute} sortable={sortable} />;
 }
