@@ -6,8 +6,8 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
-export async function openAIbreakdown(input: string) {
-  const prompt = buildPrompt(input);
+export async function openAIbreakdown(input: string, refinementContext?: string) {
+  const prompt = buildPrompt(input, refinementContext);
 
   const res = await client.chat.completions.create({
     model: 'gpt-4o-mini',
@@ -18,11 +18,20 @@ export async function openAIbreakdown(input: string) {
   return res.choices[0].message.content;
 }
 
-function buildPrompt(input: string) {
+function buildPrompt(input: string, refinementContext?: string) {
+  const refinementSection = refinementContext 
+    ? `
+      ADDITIONAL REFINEMENT INSTRUCTIONS:
+      The user has provided the following refinements to their original request. 
+      Adjust the previous logic/steps to account for this:
+      ${refinementContext}
+    ` 
+    : '';
+
   return `
 You are a senior product manager.
 
-Your task is to break down a user request into 5-8 actionable steps.
+Your task is to break down a user request into 3-8 actionable steps.
 
 STRICT RULES:
 - Output MUST be a valid JSON array
@@ -50,5 +59,6 @@ Rules:
 
 User input:
 ${input}
+${refinementSection}
 `;
 }
