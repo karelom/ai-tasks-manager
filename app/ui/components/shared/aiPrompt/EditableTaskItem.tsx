@@ -35,7 +35,7 @@ export default function EditableTaskItem({ task, onChange }: EditableStepItemPro
             value={task.status}
             onChange={(e) => onChange('status', e.target.value)}
             className={cn(
-              'px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
+              'w-30 px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
               'focus:outline-none focus:ring-2 focus:ring-blue-500'
             )}
           >
@@ -56,7 +56,7 @@ export default function EditableTaskItem({ task, onChange }: EditableStepItemPro
             value={task.priority}
             onChange={(e) => onChange('priority', e.target.value)}
             className={cn(
-              'px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
+              'w-30 px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
               'focus:outline-none focus:ring-2 focus:ring-blue-500'
             )}
           >
