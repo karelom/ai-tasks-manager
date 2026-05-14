@@ -6,12 +6,12 @@ import { AddTaskSchema, AddTaskType, defaultAddTask } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
 import TaskDatePickerLabel from '@/ui/components/shared/task/TaskDatePickerLabel';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import { useTransition } from 'react';
 import { toast } from 'sonner';
+import DownIcon from '@/ui/components/shared/icons/DownIcon';
 
 export interface CreateTaskProps {
   projectId?: string | null;
@@ -119,7 +119,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
               </select>
 
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <ChevronDownIcon className="w-4 h-4" />
+                <DownIcon />
               </div>
             </div>
             {errors.status && <p className="text-xs text-red-500">{errors.status.message}</p>}
@@ -149,7 +149,7 @@ export default function CreateTaskForm({ projectId, parentId }: CreateTaskProps)
               </select>
 
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <ChevronDownIcon className="w-4 h-4" />
+                <DownIcon />
               </div>
             </div>
             {errors.priority && <p className="text-xs text-red-500">{errors.priority.message}</p>}
