@@ -1,4 +1,4 @@
-import ProjectCard from '@/ui/components/shared/ProjectCard';
+import ProjectCard from '@/ui/components/shared/project/ProjectCard';
 import { fetchProjects } from '@/lib/actionsProject';
 import { notFound } from 'next/navigation';
 

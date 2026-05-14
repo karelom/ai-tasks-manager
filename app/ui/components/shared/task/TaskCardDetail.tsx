@@ -2,9 +2,9 @@ import { fetchActiveTask } from '@/lib/actionsTask';
 import { notFound } from 'next/navigation';
 import { InlineTitle } from '@/ui/components/core/InlineTitle';
 import { InlineDescription } from '@/ui/components/core/InlineDescription';
-import TaskPriorityLabel from '@/ui/components/shared/TaskPriorityLabel';
-import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
-import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
+import TaskPriorityLabel from '@/ui/components/shared/task/TaskPriorityLabel';
+import TaskStatusLabel from '@/ui/components/shared/task/TaskStatusLabel';
+import TaskDatePickerLabel from '@/ui/components/shared/task/TaskDatePickerLabel';
 import { ReactNode } from 'react';
 import { DeleteTaskButton } from './DeleteTaskButton';
 

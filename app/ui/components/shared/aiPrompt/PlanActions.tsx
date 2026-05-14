@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { AddTaskType } from '@/lib/schemas';
 import { useState } from 'react';
-import { GeneratePlanOptions } from '../CreateAIPromptButton';
+import { GeneratePlanOptions } from './CreateAIPromptButton';
 
 export interface PlanActionsProps {
   tasks: AddTaskType[];

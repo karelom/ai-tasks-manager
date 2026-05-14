@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import ProjectCardDetail from '@/ui/components/shared/ProjectCardDetail';
+import ProjectCardDetail from '@/ui/components/shared/project/ProjectCardDetail';
 import { Suspense } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import ProjectCardDetailSkeleton from '@/ui/components/skeletons/ProjectCardDetailSkeleton';

@@ -1,7 +1,7 @@
 import { Task } from '@/lib/definitions';
 import Link from 'next/link';
-import TaskStatusLabel from '@/ui/components/shared/TaskStatusLabel';
-import TaskPriorityLabel from '@/ui/components/shared/TaskPriorityLabel';
+import TaskStatusLabel from '@/ui/components/shared/task/TaskStatusLabel';
+import TaskPriorityLabel from '@/ui/components/shared/task/TaskPriorityLabel';
 
 interface TaskCardProps {
   data: Task;

@@ -1,5 +1,5 @@
-import CreateTaskButton from '@/ui/components/shared/CreateTaskButton';
-import TaskCardList from '@/ui/components/shared/TaskCardList';
+import CreateTaskButton from '@/ui/components/shared/task/CreateTaskButton';
+import TaskCardList from '@/ui/components/shared/task/TaskCardList';
 import { TaskCardListSkeleton } from '@/ui/components/skeletons/TaskCardSkeleton';
 import { Suspense } from 'react';
 

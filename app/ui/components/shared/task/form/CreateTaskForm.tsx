@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { cn } from '@/lib/utils';
-import TaskDatePickerLabel from '@/ui/components/shared/TaskDatePickerLabel';
+import TaskDatePickerLabel from '@/ui/components/shared/task/TaskDatePickerLabel';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import { useTransition } from 'react';
 import { toast } from 'sonner';

@@ -1,5 +1,5 @@
-import CreateTaskForm, { CreateTaskProps } from '@/ui/components/shared/CreateTaskForm';
-import CreateTaskFormHint from '@/ui/components/shared/CreateTaskFormHint';
+import CreateTaskForm, { CreateTaskProps } from '@/ui/components/shared/task/form/CreateTaskForm';
+import CreateTaskFormHint from '@/ui/components/shared/task/form/CreateTaskFormHint';
 import { Suspense } from 'react';
 
 type PageProps = {

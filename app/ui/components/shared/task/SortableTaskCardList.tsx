@@ -5,7 +5,7 @@ import { arrayMove } from '@dnd-kit/helpers';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { Task } from '@/lib/definitions';
 import { ReactNode, useRef, useTransition } from 'react';
-import TaskCard from '@/ui/components/shared/TaskCard';
+import TaskCard from '@/ui/components/shared/task/TaskCard';
 import { GripVertical } from 'lucide-react';
 import { swapTaskOrder } from '@/lib/actionsTask';
 

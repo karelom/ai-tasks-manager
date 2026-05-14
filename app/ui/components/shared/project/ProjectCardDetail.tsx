@@ -4,9 +4,9 @@ import { fetchActiveProject } from '@/lib/actionsProject';
 import ProjectHeader from '@/ui/components/shared/project/ProjectHeader';
 import ProgressBar from '@/ui/components/shared/project/ProgressBar';
 import { fetchActiveProjectTasks } from '@/lib/actionsTask';
-import TaskCardList from '@/ui/components/shared/TaskCardList';
-import CreateTaskButton from '@/ui/components/shared/CreateTaskButton';
-import { DeleteProjectButton } from '@/ui/components/shared/DeleteProjectButton';
+import TaskCardList from '@/ui/components/shared/task/TaskCardList';
+import CreateTaskButton from '@/ui/components/shared/task/CreateTaskButton';
+import { DeleteProjectButton } from '@/ui/components/shared/project/DeleteProjectButton';
 
 interface ProjectCardDetailProps {
   id: string;

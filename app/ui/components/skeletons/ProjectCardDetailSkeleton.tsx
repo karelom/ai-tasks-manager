@@ -1,4 +1,4 @@
-import { ProjectCardDetailLayout } from '@/ui/components/shared/ProjectCardDetail';
+import { ProjectCardDetailLayout } from '@/ui/components/shared/project/ProjectCardDetail';
 import { TaskCardListSkeleton } from './TaskCardSkeleton';
 
 export default function ProjectCardDetailSkeleton() {

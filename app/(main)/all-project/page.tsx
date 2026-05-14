@@ -1,5 +1,5 @@
-import CreateAIPromptButton from '@/ui/components/shared/CreateAIPromptButton';
-import ProjectCardList from '@/ui/components/shared/ProjectCardList';
+import CreateAIPromptButton from '@/ui/components/shared/aiPrompt/CreateAIPromptButton';
+import ProjectCardList from '@/ui/components/shared/project/ProjectCardList';
 import { TaskCardListSkeleton } from '@/ui/components/skeletons/TaskCardSkeleton';
 import { Suspense } from 'react';
 

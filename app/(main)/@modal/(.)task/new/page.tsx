@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import CreateTaskForm from '@/ui/components/shared/CreateTaskForm';
+import CreateTaskForm from '@/ui/components/shared/task/form/CreateTaskForm';
 import { Suspense, useEffect } from 'react';
 import clsx from 'clsx';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import CreateTaskFormHint from '@/ui/components/shared/CreateTaskFormHint';
+import CreateTaskFormHint from '@/ui/components/shared/task/form/CreateTaskFormHint';
 
 export default function Page() {
   return (

@@ -1,4 +1,4 @@
-import { TaskCardDetailLayout } from '@/ui/components/shared/TaskCardDetail';
+import { TaskCardDetailLayout } from '@/ui/components/shared/task/TaskCardDetail';
 import TaskStatusLabelSkeleton from '@/ui/components/skeletons/TaskStatusLabelSkeleton';
 import TaskPriorityLabelSkeleton from '@/ui/components/skeletons/TaskPriorityLabelSkeleton';
 import TaskDatePickerLabelSkeleton from '@/ui/components/skeletons/TaskDatePickerSkeleton';

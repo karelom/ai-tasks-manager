@@ -2,7 +2,7 @@
 
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import { useEffect, useState, useTransition } from 'react';
-import { CreateTaskProps } from '@/ui/components/shared/CreateTaskForm';
+import { CreateTaskProps } from '@/ui/components/shared/task/form/CreateTaskForm';
 import { fetchActiveProject } from '@/lib/actionsProject';
 
 export default function CreateTaskFormHint({ projectId }: CreateTaskProps) {
