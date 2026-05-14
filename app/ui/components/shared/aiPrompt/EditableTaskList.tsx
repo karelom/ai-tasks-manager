@@ -1,14 +1,14 @@
-import { AddTaskType } from '@/lib/schemas';
 import EditableTaskItem from '@/ui/components/shared/aiPrompt/EditableTaskItem';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import SortableItem from '@/ui/components/shared/SortableItem';
 import { arrayMove } from '@dnd-kit/helpers';
 import { DragDropProvider } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
+import { SortableTaskType } from '@/ui/components/shared/aiPrompt/CreateAIPromptButton';
 
 interface EditableStepListProps {
-  tasks: AddTaskType[];
-  setTasks: (tasks: AddTaskType[]) => void;
+  tasks: SortableTaskType[];
+  setTasks: (tasks: SortableTaskType[]) => void;
   isLoading: boolean;
 }
 
@@ -20,7 +20,7 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
   }
 
   return (
-    <div className="relative border rounded-xl overflow-hidden">
+    <div className="relative border-t overflow-hidden">
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/60 backdrop-blur-[2px] transition-opacity">
           <div className="flex flex-col items-center gap-2">
@@ -46,10 +46,9 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
                 }
               }}
             >
-              {tasks.map((task: AddTaskType, idx: number) => (
-                <SortableItem key={task.title} id={task.title} index={idx}>
+              {tasks.map((task, idx: number) => (
+                <SortableItem key={task.clientId} id={task.clientId} index={idx}>
                   <EditableTaskItem
-                    key={idx}
                     task={task}
                     onChange={(key: string, value: unknown) => update(idx, key, value)}
                   />

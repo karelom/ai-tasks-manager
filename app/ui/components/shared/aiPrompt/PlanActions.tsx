@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { AddTaskType } from '@/lib/schemas';
 import { useState } from 'react';
-import { GeneratePlanOptions } from './CreateAIPromptButton';
+import {
+  SortableTaskType,
+  GeneratePlanOptions,
+} from '@/ui/components/shared/aiPrompt/CreateAIPromptButton';
 
 export interface PlanActionsProps {
-  tasks: AddTaskType[];
+  tasks: SortableTaskType[];
   isLoading: boolean;
   onRefine: (options: GeneratePlanOptions) => Promise<void>;
   onRegenerate: () => void;

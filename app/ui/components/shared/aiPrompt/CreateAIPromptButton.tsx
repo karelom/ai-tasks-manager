@@ -9,11 +9,12 @@ import { createProjectWithTasks } from '@/lib/actionsProject';
 import { toast } from 'sonner';
 
 export type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
+export type SortableTaskType = AddTaskType & { clientId: string };
 
 export default function CreateAIPromptButton() {
   const [input, setInput] = useState('');
   const [isLoading, startTransition] = useTransition();
-  const [tasks, setTasks] = useState<AddTaskType[]>([]);
+  const [tasks, setTasks] = useState<SortableTaskType[]>([]);
 
   async function generatePlan({ refinementContext = '', forceNew = false }: GeneratePlanOptions) {
     if (!input) return;
@@ -21,7 +22,12 @@ export default function CreateAIPromptButton() {
     startTransition(async () => {
       const result = await breakDownTask({ input, refinementContext, forceNew });
       if (result.ok) {
-        setTasks(result.data);
+        setTasks(
+          result.data.map((task: AddTaskType) => ({
+            ...task,
+            clientId: crypto.randomUUID(),
+          }))
+        );
       }
     });
   }
@@ -29,7 +35,8 @@ export default function CreateAIPromptButton() {
   async function createProject() {
     startTransition(async () => {
       const projectPayload = { ...defaultAddProject, name: input };
-      const tasksPayload = tasks.map((task) => ({ ...defaultAddTask, ...task }));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const tasksPayload = tasks.map(({ clientId, ...task }) => ({ ...defaultAddTask, ...task }));
       const result = await createProjectWithTasks(projectPayload, tasksPayload);
       if (result.ok) {
         toast.success('Successfully create project and tasks.');

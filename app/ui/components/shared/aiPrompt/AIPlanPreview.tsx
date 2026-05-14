@@ -1,9 +1,9 @@
 import EditableTaskList from '@/ui/components/shared/aiPrompt/EditableTaskList';
 import PlanActions, { PlanActionsProps } from '@/ui/components/shared/aiPrompt/PlanActions';
-import { AddTaskType } from '@/lib/schemas';
+import { SortableTaskType } from '@/ui/components/shared/aiPrompt/CreateAIPromptButton';
 
 type AIPlanPreviewProps = {
-  setTasks: (tasks: AddTaskType[]) => void;
+  setTasks: (tasks: SortableTaskType[]) => void;
 } & PlanActionsProps;
 
 export default function AIPlanPreview({

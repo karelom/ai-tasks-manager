@@ -1,28 +1,39 @@
-import { fetchActiveTask } from '@/lib/actionsTask';
+'use client';
+
+import { fetchActiveTask, updateTask } from '@/lib/actionsTask';
 import { notFound } from 'next/navigation';
 import { InlineTitle } from '@/ui/components/core/InlineTitle';
 import { InlineDescription } from '@/ui/components/core/InlineDescription';
 import TaskPriorityLabel from '@/ui/components/shared/task/TaskPriorityLabel';
 import TaskStatusLabel from '@/ui/components/shared/task/TaskStatusLabel';
 import TaskDatePickerLabel from '@/ui/components/shared/task/TaskDatePickerLabel';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { DeleteTaskButton } from './DeleteTaskButton';
+import { Task } from '@/lib/definitions';
+import TaskCardDetailSkeleton from '@/ui/components/skeletons/TaskCardDetailSkeleton';
 
 interface TaskCardDetailProps {
   id: string;
 }
 
-export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
-  const result = await fetchActiveTask(id);
-  if (!result.ok || !result.data) {
-    notFound();
-    return;
-  }
+export default function TaskCardDetail({ id }: TaskCardDetailProps) {
+  const [task, setTask] = useState<Task>();
 
-  const task = result.data!;
-  return (
+  useEffect(() => {
+    fetchActiveTask(id).then((result) => {
+      if (!result.ok || !result.data) {
+        notFound();
+      } else {
+        setTask(result.data);
+      }
+    });
+  }, [id]);
+
+  return task ? (
     <TaskCardDetailLayout
-      title={<InlineTitle taskId={task.id} data={task.title} />}
+      title={
+        <InlineTitle data={task.title} onUpdate={async (title) => updateTask(task.id, { title })} />
+      }
       aiInsight={
         <p className="text-slate-700">{task.aiSummary || 'AI is analyzing this task...'}</p>
       }
@@ -41,6 +52,8 @@ export default async function TaskCardDetail({ id }: TaskCardDetailProps) {
       }
       deleteBtn={<DeleteTaskButton taskId={task.id} />}
     />
+  ) : (
+    <TaskCardDetailSkeleton />
   );
 }
 

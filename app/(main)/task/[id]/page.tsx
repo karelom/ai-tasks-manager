@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import TaskCardDetail from '@/ui/components/shared/task/TaskCardDetail';
-import { Suspense } from 'react';
-import TaskCardDetailSkeleton from '@/ui/components/skeletons/TaskCardDetailSkeleton';
 import { ChevronLeft } from 'lucide-react';
 
 export default async function Page({
@@ -27,9 +25,7 @@ export default async function Page({
         </Link>
       </div>
 
-      <Suspense fallback={<TaskCardDetailSkeleton />}>
-        <TaskCardDetail id={id} />
-      </Suspense>
+      <TaskCardDetail id={id} />
     </div>
   );
 }

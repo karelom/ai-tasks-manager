@@ -2,6 +2,7 @@ import { TaskPriority, TaskStatus } from '@/lib/definitions';
 import { AddTaskType } from '@/lib/schemas';
 import { cn } from '@/lib/utils';
 import DownIcon from '@/ui/components/shared/icons/DownIcon';
+import { InlineTitle } from '@/ui/components/core/InlineTitle';
 
 interface EditableStepItemProps {
   task: AddTaskType;
@@ -10,11 +11,16 @@ interface EditableStepItemProps {
 
 export default function EditableTaskItem({ task, onChange }: EditableStepItemProps) {
   return (
-    <div className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition space-y-1">
-      <input
-        value={task.title}
-        onChange={(e) => onChange('title', e.target.value)}
-        className="w-full font-medium"
+    <div className="p-4 bg-white border border-slate-200 rounded-xl hover:shadow-md transition space-y-4">
+      <InlineTitle
+        data={task.title}
+        onUpdate={(title) => {
+          return new Promise((resolve) => {
+            onChange('title', title);
+            resolve({ ok: true });
+          });
+        }}
+        className="text-xl"
       />
 
       <textarea
