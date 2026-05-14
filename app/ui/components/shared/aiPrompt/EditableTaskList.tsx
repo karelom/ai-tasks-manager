@@ -2,6 +2,9 @@ import { AddTaskType } from '@/lib/schemas';
 import EditableTaskItem from '@/ui/components/shared/aiPrompt/EditableTaskItem';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
 import SortableItem from '@/ui/components/shared/SortableItem';
+import { arrayMove } from '@dnd-kit/helpers';
+import { DragDropProvider } from '@dnd-kit/react';
+import { isSortable } from '@dnd-kit/react/sortable';
 
 interface EditableStepListProps {
   tasks: AddTaskType[];
@@ -33,15 +36,26 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
             *note: you can <b>EDIT</b> before saving.
           </i>
           <div className="space-y-2">
-            {tasks.map((task: AddTaskType, idx: number) => (
-              <SortableItem key={task.title} id={task.title} index={idx}>
-                <EditableTaskItem
-                  key={idx}
-                  task={task}
-                  onChange={(key: string, value: unknown) => update(idx, key, value)}
-                />
-              </SortableItem>
-            ))}
+            <DragDropProvider
+              onDragEnd={(event) => {
+                if (event.canceled) return;
+
+                const { source, target } = event.operation;
+                if (isSortable(source) && isSortable(target)) {
+                  setTasks(arrayMove(tasks, source.initialIndex, target.index));
+                }
+              }}
+            >
+              {tasks.map((task: AddTaskType, idx: number) => (
+                <SortableItem key={task.title} id={task.title} index={idx}>
+                  <EditableTaskItem
+                    key={idx}
+                    task={task}
+                    onChange={(key: string, value: unknown) => update(idx, key, value)}
+                  />
+                </SortableItem>
+              ))}
+            </DragDropProvider>
           </div>
         </>
       )}
