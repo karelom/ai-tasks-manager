@@ -26,9 +26,10 @@ export default function PlanActions({
         <div className="flex justify-between items-center gap-4">
           <input
             value={refineText}
+            disabled={isLoading}
             onChange={(e) => setRefineText(e.target.value)}
             placeholder="Refine... e.g. focus on speaking"
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded disabled:opacity-50"
           />
 
           <Button
