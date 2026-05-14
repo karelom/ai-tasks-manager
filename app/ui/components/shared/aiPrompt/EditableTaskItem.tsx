@@ -1,5 +1,6 @@
 import { TaskPriority, TaskStatus } from '@/lib/definitions';
 import { AddTaskType } from '@/lib/schemas';
+import { cn } from '@/lib/utils';
 import DownIcon from '@/ui/components/shared/icons/DownIcon';
 
 interface EditableStepItemProps {
@@ -27,7 +28,10 @@ export default function EditableTaskItem({ task, onChange }: EditableStepItemPro
           <select
             value={task.status}
             onChange={(e) => onChange('status', e.target.value)}
-            className="px-4 py-1 border rounded-lg bg-white focus:outline-none focus:ring-2 cursor-pointer appearance-none"
+            className={cn(
+              'px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
+              'focus:outline-none focus:ring-2 focus:ring-blue-500'
+            )}
           >
             {Object.values(TaskStatus).map((status) => (
               <option key={status} value={status}>
@@ -45,7 +49,10 @@ export default function EditableTaskItem({ task, onChange }: EditableStepItemPro
           <select
             value={task.priority}
             onChange={(e) => onChange('priority', e.target.value)}
-            className="px-4 py-1 border rounded-lg bg-white focus:outline-none focus:ring-2 cursor-pointer appearance-none"
+            className={cn(
+              'px-4 py-1 border rounded-lg bg-white border-slate-200 cursor-pointer appearance-none',
+              'focus:outline-none focus:ring-2 focus:ring-blue-500'
+            )}
           >
             {Object.values(TaskPriority).map((priority) => (
               <option key={priority} value={priority}>
