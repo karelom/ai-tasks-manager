@@ -1,6 +1,7 @@
 import { AddTaskType } from '@/lib/schemas';
 import EditableTaskItem from '@/ui/components/shared/aiPrompt/EditableTaskItem';
 import LoadingIcon from '@/ui/components/shared/icons/LoadingIcon';
+import SortableItem from '@/ui/components/shared/SortableItem';
 
 interface EditableStepListProps {
   tasks: AddTaskType[];
@@ -33,12 +34,13 @@ export default function EditableTaskList({ tasks, setTasks, isLoading }: Editabl
           </i>
           <div className="space-y-2">
             {tasks.map((task: AddTaskType, idx: number) => (
-              <EditableTaskItem
-                key={idx}
-                idx={idx}
-                task={task}
-                onChange={(key: string, value: unknown) => update(idx, key, value)}
-              />
+              <SortableItem key={task.title} id={task.title} index={idx}>
+                <EditableTaskItem
+                  key={idx}
+                  task={task}
+                  onChange={(key: string, value: unknown) => update(idx, key, value)}
+                />
+              </SortableItem>
             ))}
           </div>
         </>

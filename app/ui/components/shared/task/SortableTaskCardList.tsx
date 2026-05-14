@@ -2,12 +2,12 @@
 
 import { DragDropProvider } from '@dnd-kit/react';
 import { arrayMove } from '@dnd-kit/helpers';
-import { isSortable, useSortable } from '@dnd-kit/react/sortable';
+import { isSortable } from '@dnd-kit/react/sortable';
 import { Task } from '@/lib/definitions';
-import { ReactNode, useRef, useTransition } from 'react';
+import { useRef, useTransition } from 'react';
 import TaskCard from '@/ui/components/shared/task/TaskCard';
-import { GripVertical } from 'lucide-react';
 import { swapTaskOrder } from '@/lib/actionsTask';
+import SortableItem from '@/ui/components/shared/SortableItem';
 
 export interface SortableTaskCardListProps {
   data: Task[];
@@ -67,27 +67,6 @@ export default function SortableTaskCardList({
           )
         )}
       </DragDropProvider>
-    </div>
-  );
-}
-
-interface SortableItemProps {
-  id: string;
-  index: number;
-  children: ReactNode;
-  data: Task;
-}
-function SortableItem({ id, index, children, data }: SortableItemProps) {
-  const { ref, handleRef } = useSortable({ id, index, data });
-
-  return (
-    <div
-      ref={ref}
-      className="grid gap-1 items-center p-2 bg-slate-100 rounded-xl"
-      style={{ gridTemplateColumns: '1fr min-content' }}
-    >
-      {children}
-      <GripVertical ref={handleRef} className="w-5 m-1" style={{ cursor: 'grab' }} />
     </div>
   );
 }

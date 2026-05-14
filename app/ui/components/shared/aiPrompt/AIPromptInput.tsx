@@ -21,7 +21,7 @@ export default function AIPromptInput({ input, setInput, onGenerate, isLoading }
 
       <Button
         onClick={onGenerate}
-        disabled={isLoading}
+        disabled={isLoading || !input}
         className={cn('px-4 py-2 bg-black text-white rounded-lg cursor-pointer')}
       >
         {isLoading ? (

@@ -1,22 +1,18 @@
 import { AddTaskType } from '@/lib/schemas';
 
 interface EditableStepItemProps {
-  idx: number;
   task: AddTaskType;
   onChange: (key: string, value: unknown) => void;
 }
 
-export default function EditableTaskItem({ idx, task, onChange }: EditableStepItemProps) {
+export default function EditableTaskItem({ task, onChange }: EditableStepItemProps) {
   return (
     <div className="border p-2 rounded space-y-1">
-      <div className="flex gap-0.5">
-        <div className="inline font-semibold">{idx + 1}.</div>
-        <input
-          value={task.title}
-          onChange={(e) => onChange('title', e.target.value)}
-          className="w-full font-medium"
-        />
-      </div>
+      <input
+        value={task.title}
+        onChange={(e) => onChange('title', e.target.value)}
+        className="w-full font-medium"
+      />
 
       <textarea
         value={task.description || ''}
