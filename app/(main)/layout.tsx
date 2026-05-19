@@ -1,6 +1,7 @@
 import { Toaster } from '@/components/ui/sonner';
 import Header from '@/ui/components/core/Header';
 import Sidebar from '@/ui/components/core/Sidebar';
+import { ClerkProvider } from '@clerk/nextjs';
 import React from 'react';
 
 export default function Layout({
@@ -13,16 +14,18 @@ export default function Layout({
   return (
     <div>
       <div className="h-screen flex-1 flex flex-col relative">
-        <Header />
+        <ClerkProvider>
+          <Header />
 
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 md:mb-0 mb-16 p-8 bg-slate-50/50 overflow-y-auto">
-            {children}
-            {modal}
-          </main>
-          <Toaster />
-        </div>
+          <div className="flex flex-1 overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 md:mb-0 mb-16 p-8 bg-slate-50/50 overflow-y-auto">
+              {children}
+              {modal}
+            </main>
+            <Toaster />
+          </div>
+        </ClerkProvider>
       </div>
     </div>
   );

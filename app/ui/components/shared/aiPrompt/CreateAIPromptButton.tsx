@@ -1,12 +1,13 @@
 'use client';
 
 import breakDownTask, { type BreakDownTaskOptions } from '@/api/ai/breakdown';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import AIPromptInput from '@/ui/components/shared/aiPrompt/AIPromptInput';
 import { AddTaskType, defaultAddProject, defaultAddTask } from '@/lib/schemas';
 import AIPlanPreview from '@/ui/components/shared/aiPrompt/AIPlanPreview';
 import { createProjectWithTasks } from '@/lib/actionsProject';
 import { toast } from 'sonner';
+import { useUser } from '@clerk/nextjs';
 
 export type GeneratePlanOptions = Partial<Omit<BreakDownTaskOptions, 'input'>>;
 export type SortableTaskType = AddTaskType & { clientId: string };
@@ -15,6 +16,11 @@ export default function CreateAIPromptButton() {
   const [input, setInput] = useState('');
   const [isLoading, startTransition] = useTransition();
   const [tasks, setTasks] = useState<SortableTaskType[]>([]);
+  const { isSignedIn, isLoaded } = useUser();
+
+  useEffect(() => {
+    console.log({ isLoaded, isSignedIn });
+  }, [isSignedIn, isLoaded]);
 
   async function generatePlan({ refinementContext = '', forceNew = false }: GeneratePlanOptions) {
     if (!input) return;
@@ -46,7 +52,7 @@ export default function CreateAIPromptButton() {
     });
   }
 
-  return (
+  return isSignedIn ? (
     <div className="md:p-6 max-w-5xl mx-auto space-y-4">
       <AIPromptInput
         input={input}
@@ -63,6 +69,10 @@ export default function CreateAIPromptButton() {
         onRegenerate={() => generatePlan({ forceNew: true })}
         onCreateProject={createProject}
       />
+    </div>
+  ) : (
+    <div className="p-3">
+      Please <b>sign in</b> to activate AI Generating Plan feature.
     </div>
   );
 }
