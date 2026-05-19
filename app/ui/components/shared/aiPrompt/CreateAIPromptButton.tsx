@@ -1,7 +1,7 @@
 'use client';
 
 import breakDownTask, { type BreakDownTaskOptions } from '@/api/ai/breakdown';
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import AIPromptInput from '@/ui/components/shared/aiPrompt/AIPromptInput';
 import { AddTaskType, defaultAddProject, defaultAddTask } from '@/lib/schemas';
 import AIPlanPreview from '@/ui/components/shared/aiPrompt/AIPlanPreview';
@@ -16,11 +16,7 @@ export default function CreateAIPromptButton() {
   const [input, setInput] = useState('');
   const [isLoading, startTransition] = useTransition();
   const [tasks, setTasks] = useState<SortableTaskType[]>([]);
-  const { isSignedIn, isLoaded } = useUser();
-
-  useEffect(() => {
-    console.log({ isLoaded, isSignedIn });
-  }, [isSignedIn, isLoaded]);
+  const { isSignedIn, user } = useUser();
 
   async function generatePlan({ refinementContext = '', forceNew = false }: GeneratePlanOptions) {
     if (!input) return;
@@ -52,7 +48,19 @@ export default function CreateAIPromptButton() {
     });
   }
 
-  return isSignedIn ? (
+  return !isSignedIn ? (
+    <div className="p-3">
+      Please <b>sign in</b> to activate feature.
+    </div>
+  ) : !user?.publicMetadata.enableAIPrompt ? (
+    <div className="p-3">
+      Your account does not has authorization to access the following feature: [
+      <b>AI Generating Plan</b>
+      ].
+      <br />
+      Please contact the admin, thanks for your patience.
+    </div>
+  ) : (
     <div className="md:p-6 max-w-5xl mx-auto space-y-4">
       <AIPromptInput
         input={input}
@@ -69,10 +77,6 @@ export default function CreateAIPromptButton() {
         onRegenerate={() => generatePlan({ forceNew: true })}
         onCreateProject={createProject}
       />
-    </div>
-  ) : (
-    <div className="p-3">
-      Please <b>sign in</b> to activate AI Generating Plan feature.
     </div>
   );
 }
