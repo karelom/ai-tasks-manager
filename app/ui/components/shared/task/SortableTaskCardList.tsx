@@ -3,11 +3,12 @@
 import { DragDropProvider } from '@dnd-kit/react';
 import { arrayMove } from '@dnd-kit/helpers';
 import { isSortable } from '@dnd-kit/react/sortable';
-import { Task } from '@/lib/definitions';
+import { Task, VirtualListType } from '@/lib/definitions';
 import { useRef, useTransition } from 'react';
 import TaskCard from '@/ui/components/shared/task/TaskCard';
 import { swapTaskOrder } from '@/lib/actionsTask';
 import SortableItem from '@/ui/components/shared/SortableItem';
+import VirtualList from '@/ui/components/shared/VirtualList';
 
 export interface SortableTaskCardListProps {
   data: Task[];
@@ -23,6 +24,10 @@ export default function SortableTaskCardList({
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const [, startTransition] = useTransition();
   const newTaskList = useRef(data);
+
+  if (!sortable) {
+    return <VirtualList type={VirtualListType.TASK} items={data} backRoute={backRoute} />;
+  }
 
   function getUpdateMap(original: Task[], current: Task[]): Map<string, number> {
     const result = new Map<string, number>();
@@ -57,15 +62,11 @@ export default function SortableTaskCardList({
           }
         }}
       >
-        {data.map((task, index) =>
-          sortable ? (
-            <SortableItem key={task.id} id={task.id} index={index} data={task}>
-              <TaskCard key={task.id} data={task} backRoute={backRoute} />
-            </SortableItem>
-          ) : (
+        {data.map((task, index) => (
+          <SortableItem key={task.id} id={task.id} index={index} data={task}>
             <TaskCard key={task.id} data={task} backRoute={backRoute} />
-          )
-        )}
+          </SortableItem>
+        ))}
       </DragDropProvider>
     </div>
   );

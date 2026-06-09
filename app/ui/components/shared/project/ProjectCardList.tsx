@@ -1,20 +1,11 @@
-import ProjectCard from '@/ui/components/shared/project/ProjectCard';
 import { fetchProjects } from '@/lib/actionsProject';
 import { notFound } from 'next/navigation';
+import { VirtualListType } from '@/lib/definitions';
+import VirtualList from '@/ui/components/shared/VirtualList';
 
 export default async function ProjectCardList() {
   const result = await fetchProjects();
-  if (!result.ok) {
-    notFound();
-    return;
-  }
+  if (!result.ok) notFound();
 
-  const projects = result.data!;
-  return (
-    <div className="grid gap-4">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} data={project} />
-      ))}
-    </div>
-  );
+  return <VirtualList type={VirtualListType.PROJECT} items={result.data!} />;
 }

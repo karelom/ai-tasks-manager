@@ -24,10 +24,7 @@ export default async function TaskCardList({
   let tasks = payload;
   if (!tasks) {
     const result = await fetchTasks();
-    if (!result.ok) {
-      notFound();
-      return;
-    }
+    if (!result.ok) notFound();
     tasks = result.data!;
   }
 

@@ -66,3 +66,8 @@ export type ResponseState<T = unknown> = Promise<{
   data?: T;
   error?: string;
 }>;
+
+export enum VirtualListType {
+  PROJECT = 'project',
+  TASK = 'task',
+}
